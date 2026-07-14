@@ -12,7 +12,7 @@ export function EnquiryForm() {
       `Name: ${data.get("name")}\nOrganisation: ${data.get("organisation")}\nPhone: ${data.get("phone")}\nEmail: ${data.get("email")}\nService: ${data.get("service")}\nLocation: ${data.get("location")}\nLearner numbers: ${data.get("learners")}\nPreferred date: ${data.get("date")}\n\nMessage:\n${data.get("message")}`
     );
     setSent(true);
-    window.location.href = `mailto:hlakaniphanib@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:makabongweprojectsptyd@gmail.com?subject=${subject}&body=${body}`;
   }
   return (
     <form className="enquiry-form" onSubmit={submit}>
