@@ -1,18 +1,31 @@
 "use client";
 
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 type FormState = {
   status: "idle" | "loading" | "success" | "error";
   message: string;
 };
 
+function getLocalDateInputValue() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export function EnquiryForm() {
   const formRef = useRef<HTMLFormElement>(null);
+  const [minimumStartDate, setMinimumStartDate] = useState("");
   const [formState, setFormState] = useState<FormState>({
     status: "idle",
     message: "",
   });
+
+  useEffect(() => {
+    setMinimumStartDate(getLocalDateInputValue());
+  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -85,6 +98,7 @@ export function EnquiryForm() {
           <input
             name="fullName"
             required
+            minLength={2}
             maxLength={120}
             autoComplete="name"
             placeholder="Your full name"
@@ -95,6 +109,7 @@ export function EnquiryForm() {
           <input
             name="organisation"
             maxLength={160}
+            autoComplete="organization"
             placeholder="Organisation or group"
           />
         </label>
@@ -104,7 +119,11 @@ export function EnquiryForm() {
             name="phone"
             required
             type="tel"
+            inputMode="tel"
+            minLength={7}
             maxLength={40}
+            pattern="[+()0-9 .-]{7,40}"
+            title="Enter a valid phone number using numbers and common phone symbols."
             autoComplete="tel"
             placeholder="e.g. 081 234 5678"
           />
@@ -139,6 +158,7 @@ export function EnquiryForm() {
           Programme location
           <input
             name="programmeLocation"
+            minLength={2}
             maxLength={160}
             placeholder="Town, municipality or site"
           />
@@ -148,14 +168,21 @@ export function EnquiryForm() {
           <input
             name="estimatedLearners"
             type="number"
+            inputMode="numeric"
             min="1"
             max="100000"
+            step="1"
             placeholder="e.g. 20"
           />
         </label>
         <label>
           Preferred start date
-          <input name="preferredStartDate" type="date" />
+          <input
+            name="preferredStartDate"
+            type="date"
+            min={minimumStartDate || undefined}
+            title="Select today or a future date."
+          />
         </label>
       </div>
       <label>
@@ -163,6 +190,7 @@ export function EnquiryForm() {
         <textarea
           name="message"
           required
+          minLength={10}
           maxLength={2000}
           rows={5}
           placeholder="What outcome would you like the programme to achieve?"
