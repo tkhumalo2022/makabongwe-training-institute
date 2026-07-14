@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 
 type FormState = {
   status: "idle" | "loading" | "success" | "error";
@@ -17,15 +17,11 @@ function getLocalDateInputValue() {
 
 export function EnquiryForm() {
   const formRef = useRef<HTMLFormElement>(null);
-  const [minimumStartDate, setMinimumStartDate] = useState("");
+  const [minimumStartDate] = useState(getLocalDateInputValue);
   const [formState, setFormState] = useState<FormState>({
     status: "idle",
     message: "",
   });
-
-  useEffect(() => {
-    setMinimumStartDate(getLocalDateInputValue());
-  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

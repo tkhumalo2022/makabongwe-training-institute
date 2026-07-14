@@ -172,6 +172,15 @@ function hasSuspiciousContent(enquiry: EnquiryInput) {
   );
 }
 
+function getTodayDateString() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function isValidDateString(value: string) {
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
 function validatePayload(payload: unknown): ValidationResult {
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
     return { ok: false, errors: { form: "Invalid enquiry payload." } };
@@ -297,9 +306,12 @@ function validatePayload(payload: unknown): ValidationResult {
   const preferredStartDate = normalizeText(record.preferredStartDate);
   if (
     preferredStartDate &&
-    !/^\d{4}-\d{2}-\d{2}$/.test(preferredStartDate)
+    (!/^\d{4}-\d{2}-\d{2}$/.test(preferredStartDate) ||
+      !isValidDateString(preferredStartDate))
   ) {
     errors.preferredStartDate = "Enter a valid preferred starting date.";
+  } else if (preferredStartDate && preferredStartDate < getTodayDateString()) {
+    errors.preferredStartDate = "Preferred starting date cannot be in the past.";
   }
 
   const requestedSourcePage = readTextField(
