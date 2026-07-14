@@ -17,7 +17,7 @@ export function SiteFooter() {
         <div>
           <h3>Get in touch</h3>
           <a href="tel:+27812148384">+27 81 214 8384</a>
-          <a href="mailto:hlakaniphanib@gmail.com">hlakaniphanib@gmail.com</a>
+          <a href="mailto:makabongweprojectsptyd@gmail.com">makabongweprojectsptyd@gmail.com</a>
           <p>12A Chat Crescent, Birdswood<br />Richards Bay, 3900</p>
         </div>
         <div>
