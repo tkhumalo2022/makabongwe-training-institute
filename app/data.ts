@@ -94,6 +94,39 @@ export const programmes = [
   ["100 Youth Poultry Entrepreneurs", "A structured enterprise model combining learning, demonstration, incubation and mentorship."],
 ];
 
+export const accreditedQualifications = [
+  {
+    code: "48976",
+    title: "National Certificate: Animal Production",
+    nqf: "NQF Level 2",
+    duration: "12 months",
+  },
+  {
+    code: "49048",
+    title: "National Certificate: Animal Production",
+    nqf: "NQF Level 3",
+    duration: "12 months",
+  },
+  {
+    code: "49052",
+    title: "National Certificate: Plant Production",
+    nqf: "NQF Level 3",
+    duration: "12 months",
+  },
+  {
+    code: "49582",
+    title: "National Certificate: Poultry Production",
+    nqf: "NQF Level 2",
+    duration: "12 months",
+  },
+  {
+    code: "66589",
+    title: "National Certificate: Horticulture",
+    nqf: "NQF Level 2",
+    duration: "12 months",
+  },
+];
+
 export const deliverySteps = [
   ["Diagnose", "Confirm objectives, beneficiaries, location and expected outcomes."],
   ["Design", "Build the scope, budget, learning plan and reporting framework."],

@@ -7,11 +7,12 @@ export function SiteFooter() {
         <div className="footer-brand">
           <img src="/images/makabongwe-logo.webp" alt="Makabongwe Training Institute logo" />
           <p>Developing agricultural skills, enterprises and sustainable communities.</p>
+          <Link className="footer-accreditation" href="/agriseta"><span>View our accreditation</span><img src="/images/agriseta-logo.png" alt="AgriSETA logo" /></Link>
         </div>
         <div>
           <h3>Explore</h3>
           <Link href="/about">About us</Link><Link href="/services">Services</Link>
-          <Link href="/programmes">Programmes</Link><Link href="/partners">For partners</Link>
+          <Link href="/programmes">Programmes</Link><Link href="/agriseta">AgriSETA accreditation</Link><Link href="/partners">For partners</Link>
         </div>
         <div>
           <h3>Get in touch</h3>
