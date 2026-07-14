@@ -1,0 +1,71 @@
+/* Final mobile header alignment refinements. */
+@media (max-width: 820px) {
+  .header-inner {
+    width: calc(100% - 28px);
+    justify-content: flex-start;
+  }
+
+  .brand {
+    max-width: calc(100% - 58px);
+  }
+
+  .mobile-menu {
+    margin-left: auto;
+  }
+
+  .mobile-menu summary {
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .site-header {
+    height: 68px;
+  }
+
+  .header-inner {
+    gap: 8px;
+  }
+
+  .brand-logo-wrap {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+  }
+
+  .brand-name strong {
+    font-size: 11px;
+    letter-spacing: 0.035em;
+  }
+
+  .brand-name small {
+    margin-top: 4px;
+    font-size: 6.5px;
+    letter-spacing: 0.13em;
+  }
+
+  .mobile-menu summary {
+    width: 40px;
+    height: 40px;
+    border-color: rgba(255,255,255,.22);
+  }
+
+  .mobile-menu summary span {
+    width: 18px;
+  }
+
+  .mobile-menu nav {
+    top: 68px;
+    max-height: calc(100dvh - 68px);
+  }
+}
+
+@media (max-width: 360px) {
+  .brand-name strong {
+    font-size: 10px;
+  }
+
+  .brand-name small {
+    font-size: 6px;
+  }
+}
