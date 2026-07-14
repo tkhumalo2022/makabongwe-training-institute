@@ -24,14 +24,15 @@ The website includes:
 - React 19
 - Next.js 16-compatible App Router
 - TypeScript
-- Vinext / Vite
-- Cloudflare Worker-compatible build output
+- Vercel-hosted native Next.js deployment
 
 ## Local development
 
 Requirements:
 
 - Node.js 22.13 or newer
+- Supabase project for enquiry storage
+- Resend account and verified sender for enquiry notifications
 
 Install and start the development server:
 
@@ -39,6 +40,31 @@ Install and start the development server:
 npm install
 npm run dev
 ```
+
+Create a local environment file from the template:
+
+```bash
+cp .env.example .env.local
+```
+
+Required enquiry environment variables:
+
+```text
+SUPABASE_URL
+SUPABASE_SERVICE_ROLE_KEY
+RESEND_API_KEY
+RESEND_FROM_EMAIL
+ENQUIRY_IP_HASH_SALT
+```
+
+Optional rate-limit overrides:
+
+```text
+ENQUIRY_RATE_LIMIT_MAX
+ENQUIRY_RATE_LIMIT_WINDOW_SECONDS
+```
+
+Do not expose `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY` or `ENQUIRY_IP_HASH_SALT` in client-side code. Configure the same variables in Vercel Project Settings before deploying the enquiry backend.
 
 Create a production build:
 
@@ -51,6 +77,47 @@ Run validation:
 ```bash
 npm test
 ```
+
+Run lint and type checking:
+
+```bash
+npm run typecheck
+npx eslint . --ignore-pattern dist --ignore-pattern .next
+```
+
+## Enquiry backend
+
+The contact form posts to `POST /api/enquiries`. The server endpoint validates and sanitises submissions, applies field-length limits, rejects honeypot and suspicious payloads, rate-limits by a salted IP hash stored in Supabase, inserts the enquiry into Supabase, then sends a Resend notification to `makabongweprojectsptyd@gmail.com`. If Resend is temporarily unavailable after the database insert succeeds, the submission remains saved and the notification status is recorded as failed.
+
+Supabase migration:
+
+```text
+supabase/migrations/20260714155240_create_enquiries.sql
+```
+
+Apply the migration:
+
+```bash
+npx supabase@latest login
+npx supabase@latest link --project-ref YOUR_PROJECT_REF
+npx supabase@latest db push
+```
+
+Local form test checklist:
+
+1. Add the required variables to `.env.local`.
+2. Run `npm run dev`.
+3. Submit a valid enquiry from `/contact`.
+4. Confirm a new row appears in `public.enquiries`.
+5. Confirm Resend sends the notification email.
+6. Try invalid submissions: missing required fields, malformed email, a filled honeypot field and repeated submissions from the same IP.
+
+Resend setup:
+
+1. Verify a sending domain or sender in Resend.
+2. Create an API key with permission to send email.
+3. Set `RESEND_FROM_EMAIL` to the verified sender, for example `Makabongwe Training Institute <enquiries@example.com>`.
+4. The endpoint uses the visitor email as `reply_to` when sending the notification.
 
 ## Project structure
 
@@ -67,10 +134,10 @@ public/images/    Official logo and optimised website imagery
 
 ## Contact
 
-**Mr H.P. Buthelezi**  
-Owner and Managing Director  
-+27 81 214 8384  
-hlakaniphanib@gmail.com  
+**Mr H.P. Buthelezi**<br>
+Owner and Managing Director<br>
++27 81 214 8384<br>
+makabongweprojectsptyd@gmail.com<br>
 12A Chat Crescent, Birdswood, Richards Bay, 3900
 
 ## Copyright
