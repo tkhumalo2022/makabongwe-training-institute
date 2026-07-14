@@ -370,7 +370,10 @@ button { cursor: pointer; }
 .enquiry-form textarea { resize: vertical; }
 .enquiry-form input:focus, .enquiry-form select:focus, .enquiry-form textarea:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(7,61,42,.1); }
 .enquiry-form .button { margin-top: 26px; }
+.enquiry-form .button:disabled { cursor: wait; opacity: .7; transform: none; }
+.honeypot-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .form-note { padding: 12px 15px; margin: 16px 0 0; background: #e7f2d0; color: #2d4921; font-size: 13px; }
+.form-note-error { background: #f8ded8; color: #7d2315; }
 
 .site-footer { padding: 80px 0 24px; background: #07110d; color: white; }
 .footer-grid { display: grid; grid-template-columns: 1.3fr .65fr 1fr .9fr; gap: 70px; }
