@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { LocationAutocomplete } from "./location-autocomplete";
 
 type FormState = {
   status: "idle" | "loading" | "success" | "error";
@@ -156,12 +157,7 @@ export function EnquiryForm() {
         </label>
         <label>
           Programme location
-          <input
-            name="programmeLocation"
-            minLength={2}
-            maxLength={160}
-            placeholder="Town, municipality or site"
-          />
+          <LocationAutocomplete />
         </label>
         <label>
           Estimated learners
