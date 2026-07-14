@@ -1,7 +1,6 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { LocationAutocomplete } from "./location-autocomplete";
 
 type FormState = {
   status: "idle" | "loading" | "success" | "error";
@@ -30,10 +29,17 @@ export function EnquiryForm() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    const form = event.currentTarget;
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
     setFormState({ status: "loading", message: "Sending your enquiry..." });
 
-    const data = new FormData(event.currentTarget);
-    const sourcePage = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    const data = new FormData(form);
+    const sourcePage = window.location.pathname.slice(0, 300) || "/contact";
 
     try {
       const response = await fetch("/api/enquiries", {
@@ -49,7 +55,7 @@ export function EnquiryForm() {
           estimatedLearners: data.get("estimatedLearners"),
           preferredStartDate: data.get("preferredStartDate"),
           message: data.get("message"),
-          companyWebsite: data.get("companyWebsite"),
+          companyWebsite: data.get("contactFaxNumber"),
           sourcePage,
         }),
       });
@@ -157,7 +163,13 @@ export function EnquiryForm() {
         </label>
         <label>
           Programme location
-          <LocationAutocomplete />
+          <input
+            name="programmeLocation"
+            minLength={2}
+            maxLength={160}
+            autoComplete="address-level2"
+            placeholder="Town, municipality or site"
+          />
         </label>
         <label>
           Estimated learners
@@ -193,8 +205,12 @@ export function EnquiryForm() {
         />
       </label>
       <label className="honeypot-field" aria-hidden="true">
-        Company website
-        <input name="companyWebsite" tabIndex={-1} autoComplete="off" />
+        Fax number
+        <input
+          name="contactFaxNumber"
+          tabIndex={-1}
+          autoComplete="new-password"
+        />
       </label>
       <button className="button" type="submit" disabled={isSending}>
         {isSending ? "Sending..." : "Send enquiry"} <span>↗</span>
