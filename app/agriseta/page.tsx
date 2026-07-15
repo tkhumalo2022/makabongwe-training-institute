@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { accreditedQualifications } from "../data";
+import { getAccreditedCourses } from "../cms/courses";
 
 export const metadata: Metadata = {
   title: "AgriSETA Accreditation",
   description:
     "View Makabongwe Projects' AgriSETA accreditation and five accredited 12-month agricultural qualifications, valid through 30 June 2028.",
 };
+export const revalidate = 300;
 
-export default function AgriSetaPage() {
+export default async function AgriSetaPage() {
+  const accreditedCourses = await getAccreditedCourses();
+
   return (
     <main>
       <section className="agriseta-hero">
@@ -45,12 +48,12 @@ export default function AgriSetaPage() {
           </header>
 
           <div className="qualification-ledger">
-            {accreditedQualifications.map((qualification, index) => (
-              <article key={qualification.code}>
+            {accreditedCourses.map((course, index) => (
+              <article key={course.id}>
                 <span className="ledger-index">{String(index + 1).padStart(2, "0")}</span>
-                <div className="ledger-title"><small>SAQA ID {qualification.code}</small><h3>{qualification.title}</h3></div>
-                <div className="ledger-facts"><span>{qualification.nqf}</span><span>{qualification.duration}</span></div>
-                <Link className="round-link" href={`/contact?service=${encodeURIComponent(qualification.title)}#enquiry`} aria-label={`Enquire about ${qualification.title}`}>↗</Link>
+                <div className="ledger-title"><small>SAQA ID {course.saqaId ?? "Confirmed per intake"}</small><h3>{course.title}</h3></div>
+                <div className="ledger-facts"><span>{course.nqfLevel ?? "Accredited programme"}</span><span>{course.duration}</span></div>
+                <Link className="round-link" href={`/contact?service=${encodeURIComponent(course.title)}#enquiry`} aria-label={`Enquire about ${course.title}`}>↗</Link>
               </article>
             ))}
           </div>

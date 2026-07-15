@@ -57,6 +57,18 @@ RESEND_FROM_EMAIL
 ENQUIRY_IP_HASH_SALT
 ```
 
+Wix CMS environment variables:
+
+```text
+WIX_API_KEY
+WIX_SITE_ID
+WIX_COURSES_COLLECTION_ID=Courses
+```
+
+The Wix key is used only in Server Components and must include the `Read Data
+Items` permission for the Makabongwe site. The complete collection field list is
+documented in `docs/wix-cms-setup.md`.
+
 Optional rate-limit overrides:
 
 ```text
@@ -124,6 +136,7 @@ Resend setup:
 ```text
 app/
   about/          About and leadership
+  cms/            Wix CMS data access and safe fallback content
   contact/        Contact information and enquiry form
   partners/       Institutional partnership model
   programmes/     Flagship and packaged programmes
