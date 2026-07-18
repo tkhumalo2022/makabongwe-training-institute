@@ -34,7 +34,7 @@ export default async function ProgrammesPage() {
                 <div className="qualification-top"><span>{String(index + 1).padStart(2, "0")}</span><strong>{qualification.duration}</strong></div>
                 <p>SAQA qualification {qualification.code}</p>
                 <h3>{qualification.title}</h3>
-                <div className="qualification-bottom"><span>{qualification.nqf}</span><Link href={`/contact?service=${encodeURIComponent(qualification.title)}#enquiry`}>Programme enquiry ↗</Link></div>
+                <div className="qualification-bottom"><span>{qualification.nqf}</span><Link href={`/enrol?course=${encodeURIComponent(qualification.code)}`}>Enrol Now ↗</Link></div>
               </article>
             ))}
           </div>
@@ -55,7 +55,7 @@ export default async function ProgrammesPage() {
         </div>
       </section>
       <section className="section packaged-programmes">
-        <div className="shell"><div className="section-heading"><div><p className="eyebrow dark"><span />Other packaged programmes</p><h2>Ready to adapt to your context.</h2></div></div><div className="programme-list">{programmes.map(([title, text], i) => <article key={title}><span>{String(i + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{text}</p><Link href={`/contact?service=${encodeURIComponent(title)}#enquiry`}>Enquire ↗</Link></article>)}</div></div>
+        <div className="shell"><div className="section-heading"><div><p className="eyebrow dark"><span />Other packaged programmes</p><h2>Ready to adapt to your context.</h2></div></div><div className="programme-list">{programmes.map(([title, text], i) => <article key={title}><span>{String(i + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{text}</p><Link href={`/enrol?course=${encodeURIComponent(title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""))}`}>Enrol Now ↗</Link></article>)}</div></div>
       </section>
       <section className="mentor-feature"><div className="shell"><img src="/images/mentorship.webp" alt="Agricultural mentor reviewing enterprise plans with young entrepreneurs" /><div><p className="eyebrow"><span />After the classroom</p><h2>Mentorship keeps momentum alive.</h2><p>Production monitoring, recordkeeping support, site visits and market-readiness guidance help participants apply their learning and respond to real challenges.</p><Link href="/services" className="text-link light">Explore enterprise support <span>→</span></Link></div></div></section>
     </main>

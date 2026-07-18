@@ -4,6 +4,7 @@ const nav = [
   ["About", "/about"],
   ["Services", "/services"],
   ["Programmes", "/programmes"],
+  ["Enrol Now", "/enrol"],
   ["AgriSETA", "/agriseta"],
   ["Partners", "/partners"],
   ["Contact", "/contact"],

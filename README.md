@@ -52,7 +52,8 @@ Required enquiry environment variables:
 
 ```text
 SUPABASE_URL
-SUPABASE_SERVICE_ROLE_KEY
+SUPABASE_SECRET_KEY
+SUPABASE_SERVICE_ROLE_KEY # legacy fallback
 RESEND_API_KEY
 RESEND_FROM_EMAIL
 ENQUIRY_IP_HASH_SALT
@@ -65,7 +66,7 @@ ENQUIRY_RATE_LIMIT_MAX
 ENQUIRY_RATE_LIMIT_WINDOW_SECONDS
 ```
 
-Do not expose `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY` or `ENQUIRY_IP_HASH_SALT` in client-side code. Configure the same variables in Vercel Project Settings before deploying the enquiry backend.
+Do not expose `SUPABASE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY` or `ENQUIRY_IP_HASH_SALT` in client-side code. The server prefers `SUPABASE_SECRET_KEY` and supports `SUPABASE_SERVICE_ROLE_KEY` only as a legacy fallback. Configure the same variables in Vercel Project Settings before deploying the enquiry backend.
 
 Create a production build:
 

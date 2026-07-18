@@ -54,8 +54,11 @@ function parsePositiveInt(value: string, fallback: number) {
 
 function getConfig(): RuntimeConfig | null {
   const supabaseUrl = readEnv("SUPABASE_URL").replace(/\/+$/, "");
-  const supabaseKey =
-    readEnv("SUPABASE_SERVICE_ROLE_KEY") || readEnv("SUPABASE_SECRET_KEY");
+  const supabaseKey = (
+    process.env.SUPABASE_SECRET_KEY ??
+    process.env.SUPABASE_SERVICE_ROLE_KEY ??
+    ""
+  ).trim();
   const resendApiKey = readEnv("RESEND_API_KEY");
   const resendFromEmail = readEnv("RESEND_FROM_EMAIL");
   const ipHashSalt = readEnv("ENQUIRY_IP_HASH_SALT");
@@ -384,7 +387,9 @@ async function sha256Hex(value: string) {
 function getSupabaseHeaders(config: RuntimeConfig, prefer?: string) {
   return {
     apikey: config.supabaseKey,
-    authorization: `Bearer ${config.supabaseKey}`,
+    ...(!config.supabaseKey.startsWith("sb_secret_")
+      ? { authorization: `Bearer ${config.supabaseKey}` }
+      : {}),
     "content-type": "application/json",
     ...(prefer ? { prefer } : {}),
   };
