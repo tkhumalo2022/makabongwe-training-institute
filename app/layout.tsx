@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   },
   description:
     "Practical agricultural training, enterprise development and community programmes in Richards Bay, KwaZulu-Natal.",
+  verification: {
+    google: "Ha8mFSdG3jPgIgX_VB7HwDsyFQST4jPipeFqXTXmrAY",
+  },
   other: {
     "codex-preview": "development",
   },
