@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "../components/page-hero";
-import { values } from "../data";
+import { getValues } from "../lib/cms";
 
 export const metadata: Metadata = { title: "About Us", description: "Meet Makabongwe Training Institute, its leadership, purpose, values and approach to agricultural development." };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const values = await getValues();
+
   return (
     <main>
       <PageHero eyebrow="About Makabongwe" title="Learning that grows into livelihoods." intro="A Richards Bay–based agricultural skills and enterprise-development partner helping people move beyond attendance certificates towards productive farming, business ownership and sustainable livelihoods." />

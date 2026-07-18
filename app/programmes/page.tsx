@@ -1,11 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "../components/page-hero";
-import { accreditedQualifications, programmes, trainingDays } from "../data";
+import {
+  getAccreditedQualifications,
+  getProgrammes,
+  getTrainingDays,
+} from "../lib/cms";
 
 export const metadata: Metadata = { title: "Programmes", description: "Explore Azibuye Emasisweni and Makabongwe's packaged poultry, food garden and agricultural upskilling programmes." };
 
-export default function ProgrammesPage() {
+export default async function ProgrammesPage() {
+  const [accreditedQualifications, programmes, trainingDays] =
+    await Promise.all([
+      getAccreditedQualifications(),
+      getProgrammes(),
+      getTrainingDays(),
+    ]);
+
   return (
     <main>
       <PageHero eyebrow="Programmes" title="From practical workshops to 12-month qualifications." intro="AgriSETA-accredited national certificates, focused practical programmes and enterprise pathways that connect agricultural learning to productive outcomes." action="Book a programme discussion" />

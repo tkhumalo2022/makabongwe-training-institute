@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { accreditedQualifications } from "../data";
+import { getAccreditedQualifications } from "../lib/cms";
 
 export const metadata: Metadata = {
   title: "AgriSETA Accreditation",
@@ -8,7 +8,9 @@ export const metadata: Metadata = {
     "View Makabongwe Projects' AgriSETA accreditation and five accredited 12-month agricultural qualifications, valid through 30 June 2028.",
 };
 
-export default function AgriSetaPage() {
+export default async function AgriSetaPage() {
+  const accreditedQualifications = await getAccreditedQualifications();
+
   return (
     <main>
       <section className="agriseta-hero">

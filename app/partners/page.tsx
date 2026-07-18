@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "../components/page-hero";
-import { deliverySteps } from "../data";
+import { getDeliverySteps } from "../lib/cms";
 
 export const metadata: Metadata = { title: "For Partners", description: "Partner with Makabongwe on practical agricultural training, food security, youth enterprise and community development programmes." };
 
@@ -16,7 +16,9 @@ const clients = [
 
 const kpis = ["Learner reach & inclusion", "Attendance & participation", "Completion & skills gain", "Enterprise activation", "Production & recordkeeping", "Income & food security", "3, 6 & 12-month sustainability", "Partner satisfaction"];
 
-export default function PartnersPage() {
+export default async function PartnersPage() {
+  const deliverySteps = await getDeliverySteps();
+
   return (
     <main>
       <PageHero eyebrow="For partners" title="A practical delivery partner for measurable community impact." intro="Makabongwe designs, mobilises, delivers, mentors and reports—giving institutions one accountable pathway from programme idea to beneficiary outcome." action="Request a partnership meeting" />

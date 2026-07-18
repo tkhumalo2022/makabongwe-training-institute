@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "../components/page-hero";
-import { services } from "../data";
+import { getServices } from "../lib/cms";
 
 export const metadata: Metadata = { title: "Services", description: "Explore Makabongwe's six agricultural training, enterprise and programme implementation service pillars." };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await getServices();
+
   return (
     <main>
       <PageHero eyebrow="Six integrated service pillars" title="Skills, enterprise and sustainable agriculture." intro="Flexible enough for individuals and community groups. Structured enough for municipalities, government departments, companies, funders and implementing partners." action="Request a tailored proposal" />

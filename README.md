@@ -17,6 +17,7 @@ The website includes:
 - A complete 10-day poultry training journey
 - Institutional partnership and impact information
 - A structured programme enquiry experience
+- A Supabase-backed CMS for services, programmes, qualifications, training days, delivery steps and values
 - Responsive layouts for desktop, tablet and mobile
 
 ## Technology
@@ -118,6 +119,32 @@ Resend setup:
 2. Create an API key with permission to send email.
 3. Set `RESEND_FROM_EMAIL` to the verified sender, for example `Makabongwe Training Institute <enquiries@example.com>`.
 4. The endpoint uses the visitor email as `reply_to` when sending the notification.
+
+## Content management backend
+
+The public website reads published content from six tables in the same Supabase
+project used for enquiries:
+
+```text
+cms_services
+cms_programmes
+cms_training_days
+cms_qualifications
+cms_delivery_steps
+cms_values
+```
+
+Edit these rows from the Supabase Table Editor. Use `sort_order` to control the
+display order and `is_published` to show or hide an item. Website reads happen
+only on the Next.js server through `SUPABASE_SERVICE_ROLE_KEY`; the key is never
+sent to a visitor's browser. RLS is enabled and direct `anon` and `authenticated`
+access is revoked. If Supabase is temporarily unavailable, the site keeps serving
+the matching built-in content rather than returning a broken page. Content is
+refreshed within five minutes after an edit.
+
+The operational status endpoint is `GET /api/cms/status`. A healthy connection
+returns HTTP 200 with `connected: true`; it never returns credentials or CMS row
+content.
 
 ## Project structure
 

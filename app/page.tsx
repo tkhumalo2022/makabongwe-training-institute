@@ -1,7 +1,12 @@
 import Link from "next/link";
-import { deliverySteps, services } from "./data";
+import { getDeliverySteps, getServices } from "./lib/cms";
 
-export default function Home() {
+export default async function Home() {
+  const [deliverySteps, services] = await Promise.all([
+    getDeliverySteps(),
+    getServices(),
+  ]);
+
   return (
     <main>
       <section className="home-hero">
