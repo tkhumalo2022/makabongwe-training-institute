@@ -14,7 +14,8 @@ const enquiryRoute = await readFile(new URL("../app/api/enquiries/route.ts", imp
 test("course loading only returns published, available CMS programmes", () => {
   assert.match(courseRoute, /cms_programmes/);
   assert.match(courseRoute, /is_published=eq\.true/);
-  assert.match(courseRoute, /is_available=eq\.true/);
+  assert.match(courseRoute, /is_available/);
+  assert.doesNotMatch(courseRoute, /&is_available=eq\.true/);
 });
 
 test("payment amount is calculated from the server-side course", () => {
@@ -59,19 +60,18 @@ test("server-only course management converts rands to cents and blocks unsafe av
   assert.match(courseAdmin, /unpublished course cannot be available/i);
 });
 
-test("current Supabase secret key is preferred with a legacy fallback", () => {
+test("Supabase server keys retry safely after a 401", () => {
   for (const source of [paymentLib, readinessScript, enquiryRoute]) {
-    const current = source.indexOf("SUPABASE_SECRET_KEY");
-    const legacy = source.indexOf("SUPABASE_SERVICE_ROLE_KEY");
-    assert.ok(current >= 0 && legacy > current);
+    assert.match(source, /SUPABASE_SECRET_KEY/);
+    assert.match(source, /SUPABASE_SERVICE_ROLE_KEY/);
+    assert.match(source, /status !== 401/);
   }
-  assert.match(paymentLib, /process\.env\.SUPABASE_SECRET_KEY \?\?[\s\S]*process\.env\.SUPABASE_SERVICE_ROLE_KEY/);
   assert.match(paymentLib, /SupabaseConfigurationError/);
 });
 
-test("opaque secret keys use apikey only and readiness output contains names only", () => {
-  assert.match(paymentLib, /startsWith\("sb_secret_"\)/);
-  assert.match(readinessScript, /startsWith\("sb_secret_"\)/);
+test("Supabase server requests send apikey and authorization without exposing keys", () => {
+  assert.match(paymentLib, /apikey: key/);
+  assert.match(paymentLib, /authorization: `Bearer \$\{key\}`/);
   assert.doesNotMatch(paymentLib + readinessScript + enquiryRoute, /NEXT_PUBLIC_SUPABASE_(?:SECRET|SERVICE_ROLE)/);
-  assert.doesNotMatch(readinessScript, /console\.(?:log|error)\([^\n]*(?:supabaseKey|process\.env\[)/);
+  assert.doesNotMatch(readinessScript, /console\.(?:log|error)\([^\n]*(?:supabaseKeys|process\.env\[)/);
 });

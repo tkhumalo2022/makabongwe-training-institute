@@ -8,7 +8,7 @@ const DEFAULT_RATE_LIMIT_WINDOW_SECONDS = 60 * 60;
 
 type RuntimeConfig = {
   supabaseUrl: string;
-  supabaseKey: string;
+  supabaseKeys: string[];
   resendApiKey: string;
   resendFromEmail: string;
   ipHashSalt: string;
@@ -54,18 +54,17 @@ function parsePositiveInt(value: string, fallback: number) {
 
 function getConfig(): RuntimeConfig | null {
   const supabaseUrl = readEnv("SUPABASE_URL").replace(/\/+$/, "");
-  const supabaseKey = (
-    process.env.SUPABASE_SECRET_KEY ??
-    process.env.SUPABASE_SERVICE_ROLE_KEY ??
-    ""
-  ).trim();
+  const supabaseKeys = [...new Set([
+    process.env.SUPABASE_SECRET_KEY,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+  ].map((key) => key?.trim()).filter((key): key is string => Boolean(key)))];
   const resendApiKey = readEnv("RESEND_API_KEY");
   const resendFromEmail = readEnv("RESEND_FROM_EMAIL");
   const ipHashSalt = readEnv("ENQUIRY_IP_HASH_SALT");
 
   if (
     !supabaseUrl ||
-    !supabaseKey ||
+    !supabaseKeys.length ||
     !resendApiKey ||
     !resendFromEmail ||
     !ipHashSalt
@@ -75,7 +74,7 @@ function getConfig(): RuntimeConfig | null {
 
   return {
     supabaseUrl,
-    supabaseKey,
+    supabaseKeys,
     resendApiKey,
     resendFromEmail,
     ipHashSalt,
@@ -384,15 +383,33 @@ async function sha256Hex(value: string) {
     .join("");
 }
 
-function getSupabaseHeaders(config: RuntimeConfig, prefer?: string) {
+function getSupabaseHeaders(key: string, prefer?: string) {
   return {
-    apikey: config.supabaseKey,
-    ...(!config.supabaseKey.startsWith("sb_secret_")
-      ? { authorization: `Bearer ${config.supabaseKey}` }
-      : {}),
+    apikey: key,
+    authorization: `Bearer ${key}`,
     "content-type": "application/json",
     ...(prefer ? { prefer } : {}),
   };
+}
+
+async function fetchSupabase(
+  config: RuntimeConfig,
+  input: string | URL,
+  init: RequestInit = {},
+  prefer?: string,
+) {
+  let response: Response | null = null;
+  for (const key of config.supabaseKeys) {
+    response = await fetch(input, {
+      ...init,
+      headers: {
+        ...getSupabaseHeaders(key, prefer),
+        ...(init.headers ?? {}),
+      },
+    });
+    if (response.status !== 401) return response;
+  }
+  return response as Response;
 }
 
 async function isRateLimited(config: RuntimeConfig, ipHash: string) {
@@ -405,9 +422,7 @@ async function isRateLimited(config: RuntimeConfig, ipHash: string) {
   url.searchParams.set("created_at", `gte.${since}`);
   url.searchParams.set("limit", String(config.rateLimitMax));
 
-  const response = await fetch(url, {
-    headers: getSupabaseHeaders(config, "count=exact"),
-  });
+  const response = await fetchSupabase(config, url, {}, "count=exact");
 
   if (!response.ok) {
     console.error("Enquiry rate-limit check failed", {
@@ -502,11 +517,10 @@ async function updateNotificationStatus(
   const url = new URL(`${config.supabaseUrl}/rest/v1/enquiries`);
   url.searchParams.set("id", `eq.${id}`);
 
-  const response = await fetch(url, {
+  const response = await fetchSupabase(config, url, {
     method: "PATCH",
-    headers: getSupabaseHeaders(config, "return=minimal"),
     body: JSON.stringify(values),
-  });
+  }, "return=minimal");
 
   if (!response.ok) {
     console.warn("Unable to update enquiry notification status", {
@@ -550,9 +564,8 @@ async function insertEnquiry(
   ipHash: string,
   userAgent: string | null,
 ) {
-  const response = await fetch(`${config.supabaseUrl}/rest/v1/enquiries`, {
+  const response = await fetchSupabase(config, `${config.supabaseUrl}/rest/v1/enquiries`, {
     method: "POST",
-    headers: getSupabaseHeaders(config, "return=representation"),
     body: JSON.stringify({
       full_name: enquiry.fullName,
       organisation: enquiry.organisation,
@@ -567,7 +580,7 @@ async function insertEnquiry(
       ip_hash: ipHash,
       user_agent: userAgent,
     }),
-  });
+  }, "return=representation");
 
   if (!response.ok) {
     console.error("Supabase enquiry insert failed", {

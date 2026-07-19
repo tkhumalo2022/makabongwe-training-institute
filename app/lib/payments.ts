@@ -2,6 +2,7 @@ export type Course = {
   id: number; slug: string; title: string; description: string; department: string;
   duration: string; deliveryMode: string; location: string; imageUrl: string | null;
   priceCents: number; registrationFeeCents: number; availableIntake: string | null;
+  isAvailable: boolean;
 };
 
 export type Applicant = {
@@ -32,7 +33,7 @@ export function validateApplicant(value: unknown): { ok: true; applicant: Applic
   }};
 }
 
-type Config = { url: string; key: string; paystackKey: string; siteUrl: string };
+type Config = { url: string; keys: string[]; paystackKey: string; siteUrl: string };
 
 export class SupabaseConfigurationError extends Error {
   constructor() {
@@ -41,20 +42,24 @@ export class SupabaseConfigurationError extends Error {
   }
 }
 
-export function resolveSupabaseServerKey() {
-  const key =
-    process.env.SUPABASE_SECRET_KEY ??
-    process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!key?.trim()) throw new SupabaseConfigurationError();
-  return key.trim();
+export function resolveSupabaseServerKeys() {
+  const keys = [
+    process.env.SUPABASE_SECRET_KEY,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+  ]
+    .map((key) => key?.trim())
+    .filter((key): key is string => Boolean(key));
+  const uniqueKeys = [...new Set(keys)];
+  if (!uniqueKeys.length) throw new SupabaseConfigurationError();
+  return uniqueKeys;
 }
 
 export function getSupabaseConfig(): Config | null {
   const url = process.env.SUPABASE_URL?.replace(/\/$/, "");
-  let key: string;
-  try { key = resolveSupabaseServerKey(); } catch { return null; }
+  let keys: string[];
+  try { keys = resolveSupabaseServerKeys(); } catch { return null; }
   if (!url) return null;
-  return { url, key, paystackKey: "", siteUrl: (process.env.NEXT_PUBLIC_SITE_URL || "https://www.makabongwe.network").replace(/\/$/, "") };
+  return { url, keys, paystackKey: "", siteUrl: (process.env.NEXT_PUBLIC_SITE_URL || "https://www.makabongwe.network").replace(/\/$/, "") };
 }
 export function getServerConfig(): Config | null {
   const base = getSupabaseConfig();
@@ -63,19 +68,29 @@ export function getServerConfig(): Config | null {
   return { ...base, paystackKey };
 }
 
-function headers(config: Config, prefer?: string) {
-  return { apikey: config.key, ...(!config.key.startsWith("sb_secret_") ? { authorization: `Bearer ${config.key}` } : {}),
+function headers(key: string, prefer?: string) {
+  return { apikey: key, authorization: `Bearer ${key}`,
     "content-type": "application/json", ...(prefer ? { prefer } : {}) };
 }
 export async function supabase(config: Config, path: string, init: RequestInit = {}) {
-  return fetch(`${config.url}/rest/v1/${path}`, { ...init, headers: { ...headers(config), ...(init.headers || {}) }, cache: "no-store" });
+  let response: Response | null = null;
+  for (const key of config.keys) {
+    response = await fetch(`${config.url}/rest/v1/${path}`, {
+      ...init,
+      headers: { ...headers(key), ...(init.headers || {}) },
+      cache: "no-store",
+    });
+    if (response.status !== 401) return response;
+  }
+  return response as Response;
 }
 export function mapCourse(row: Record<string, unknown>): Course {
   return { id: Number(row.id), slug: String(row.slug), title: String(row.title), description: String(row.description),
     department: String(row.department || "Agricultural Training"), duration: String(row.duration || "To be confirmed"),
     deliveryMode: String(row.delivery_mode || "Contact learning"), location: String(row.location || "To be confirmed"),
     imageUrl: row.image_url ? String(row.image_url) : null, priceCents: Number(row.price_cents || 0), registrationFeeCents: Number(row.registration_fee_cents || 0),
-    availableIntake: row.available_intake ? String(row.available_intake) : null };
+    availableIntake: row.available_intake ? String(row.available_intake) : null,
+    isAvailable: row.is_available === true };
 }
 export async function getCourse(config: Config, courseId: number) {
   const res = await supabase(config, `cms_programmes?select=id,slug,title,description,department,duration,delivery_mode,location,image_url,price_cents,registration_fee_cents,available_intake&id=eq.${courseId}&is_published=eq.true&is_available=eq.true&limit=1`);

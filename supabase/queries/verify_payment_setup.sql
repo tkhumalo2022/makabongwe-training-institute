@@ -61,3 +61,16 @@ select id, title, slug, is_published, is_available, price_cents,
        (is_published and is_available and price_cents + registration_fee_cents > 0) as payment_ready
 from public.cms_programmes
 order by sort_order, id;
+
+select table_name, view_definition
+from information_schema.views
+where table_schema = 'public'
+  and table_name in (
+    'all_enrolled_students',
+    'students_poultry_starter_workshop',
+    'students_broiler_business_bootcamp',
+    'students_school_food_garden_package',
+    'students_farm_cooperative_upskilling',
+    'students_100_youth_poultry_entrepreneurs'
+  )
+order by table_name;

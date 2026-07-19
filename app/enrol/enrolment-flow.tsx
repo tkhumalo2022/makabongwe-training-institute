@@ -37,12 +37,17 @@ export function EnrolmentFlow() {
         if (!r.ok) throw new Error(j.message);
         setCourses(j.courses);
         const wanted = new URLSearchParams(location.search).get("course");
-        if (wanted)
-          setSelected(
-            j.courses.find(
-              (c: Course) => String(c.id) === wanted || c.slug === wanted,
-            ) || null,
+        if (wanted) {
+          const matched = j.courses.find(
+            (c: Course) => String(c.id) === wanted || c.slug === wanted,
           );
+          if (
+            matched?.isAvailable &&
+            matched.priceCents + matched.registrationFeeCents > 0
+          ) {
+            setSelected(matched);
+          }
+        }
       })
       .catch((e) => setError(e.message || "Courses could not be loaded."))
       .finally(() => setLoading(false));
@@ -149,9 +154,7 @@ export function EnrolmentFlow() {
             {loading ? (
               <p className="state-card">Loading available courses…</p>
             ) : filtered.length === 0 ? (
-              <p className="state-card">
-                No available courses match your filters.
-              </p>
+              <p className="state-card">No courses match your filters.</p>
             ) : (
               <div className="course-grid">
                 {filtered.map((c) => (
@@ -194,12 +197,16 @@ export function EnrolmentFlow() {
                     </strong>
                     <button
                       className="button button-dark"
-                      disabled={c.priceCents + c.registrationFeeCents <= 0}
+                      disabled={
+                        !c.isAvailable ||
+                        c.priceCents + c.registrationFeeCents <= 0
+                      }
                       onClick={() => setSelected(c)}
                       aria-pressed={selected?.id === c.id}
                     >
-                      {c.priceCents + c.registrationFeeCents <= 0
-                        ? "Enrolment unavailable"
+                      {!c.isAvailable ||
+                      c.priceCents + c.registrationFeeCents <= 0
+                        ? "Intake not yet open"
                         : selected?.id === c.id
                           ? "Selected"
                           : "Select Course"}

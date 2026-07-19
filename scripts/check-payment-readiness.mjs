@@ -1,16 +1,23 @@
 const requiredEnvironment = ["SUPABASE_URL", "PAYSTACK_SECRET_KEY", "NEXT_PUBLIC_SITE_URL"];
 for (const file of [".env.local", ".env"]) { try { process.loadEnvFile(file); } catch {} }
-const supabaseKey = process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseKeys = [...new Set([
+  process.env.SUPABASE_SECRET_KEY,
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+].map((key) => key?.trim()).filter(Boolean))];
 const missingEnvironment = requiredEnvironment.filter((name) => !process.env[name]);
-if (!supabaseKey) missingEnvironment.push("SUPABASE_SECRET_KEY", "SUPABASE_SERVICE_ROLE_KEY");
+if (!supabaseKeys.length) missingEnvironment.push("SUPABASE_SECRET_KEY", "SUPABASE_SERVICE_ROLE_KEY");
 console.log("Makabongwe payment readiness");
 console.log(`Missing environment variables: ${missingEnvironment.length ? missingEnvironment.join(", ") : "none"}`);
-if (!process.env.SUPABASE_URL || !supabaseKey) {
+if (!process.env.SUPABASE_URL || !supabaseKeys.length) {
   console.error("Course readiness unavailable until Supabase server variables are configured.");
   process.exitCode = 1;
 } else {
   const url = `${process.env.SUPABASE_URL.replace(/\/$/, "")}/rest/v1/cms_programmes?select=id,title,slug,price_cents,registration_fee_cents,is_available,is_published,department,duration,delivery_mode,location,image_url,available_intake&order=sort_order.asc`;
-  const response = await fetch(url, { headers: { apikey: supabaseKey, ...(!supabaseKey.startsWith("sb_secret_") ? { authorization: `Bearer ${supabaseKey}` } : {}) } });
+  let response;
+  for (const key of supabaseKeys) {
+    response = await fetch(url, { headers: { apikey: key, authorization: `Bearer ${key}` } });
+    if (response.status !== 401) break;
+  }
   if (!response.ok) { console.error(`Course readiness query failed with HTTP ${response.status}.`); process.exitCode = 1; }
   else {
     const courses = await response.json();
