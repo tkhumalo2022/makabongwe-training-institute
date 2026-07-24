@@ -16,7 +16,7 @@ export default function manifest(): MetadataRoute.Manifest {
         src: "/images/makabongwe-logo.webp",
         sizes: "any",
         type: "image/webp",
-        purpose: "any maskable",
+        purpose: "maskable",
       },
     ],
   };
