@@ -18,6 +18,13 @@ export const metadata: Metadata = {
   },
   description:
     "Practical agricultural training, enterprise development and community programmes in Richards Bay, KwaZulu-Natal.",
+  icons: {
+    icon: [
+      { url: "/images/makabongwe-logo.webp", type: "image/webp" },
+    ],
+    shortcut: "/images/makabongwe-logo.webp",
+    apple: "/images/makabongwe-logo.webp",
+  },
   verification: {
     google: "Ha8mFSdG3jPgIgX_VB7HwDsyFQST4jPipeFqXTXmrAY",
   },
