@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import "./mobile.css";
 import "./mobile-header-fix.css";
+import "./accessibility.css";
 import { SiteFooter } from "./components/site-footer";
 import { SiteHeader } from "./components/site-header";
 
@@ -25,9 +26,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Makabongwe Training Institute", url: siteUrl }],
   creator: "Makabongwe Training Institute",
   publisher: "Makabongwe Training Institute",
-  alternates: {
-    canonical: "/",
-  },
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "en_ZA",
@@ -36,14 +35,12 @@ export const metadata: Metadata = {
     title: "Makabongwe Training Institute | Accredited Agricultural Training",
     description:
       "Build practical agricultural skills through accredited training, enterprise support and community-focused programmes.",
-    images: [
-      {
-        url: "/images/hero-agriculture.webp",
-        width: 1200,
-        height: 630,
-        alt: "Makabongwe agricultural trainees learning practical crop production",
-      },
-    ],
+    images: [{
+      url: "/images/hero-agriculture.webp",
+      width: 1200,
+      height: 630,
+      alt: "Makabongwe agricultural trainees learning practical crop production",
+    }],
   },
   twitter: {
     card: "summary_large_image",
@@ -95,20 +92,13 @@ const organisationSchema = {
     "@type": "AdministrativeArea",
     name: "KwaZulu-Natal",
   },
-  sameAs: [],
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-ZA">
       <body className={`${geistSans.variable} antialiased`}>
-        <a className="skip-link" href="#main-content">
-          Skip to main content
-        </a>
+        <a className="skip-link" href="#main-content">Skip to main content</a>
         <SiteHeader />
         <div id="main-content">{children}</div>
         <SiteFooter />
