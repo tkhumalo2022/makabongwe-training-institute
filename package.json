@@ -8,7 +8,6 @@
   "scripts": {
     "install:ci": "bash scripts/install-ci.sh",
     "dev": "vite",
-    "prebuild": "node migration/appwrite/run-preview.mjs",
     "build": "next build",
     "start": "next start",
     "test": "npm run build && node --test tests/*.test.mjs",
