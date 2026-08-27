@@ -15,6 +15,8 @@ const baseHeaders = {
   "X-Appwrite-Key": apiKey,
 };
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 async function request(path, init = {}) {
   const response = await fetch(`${endpoint}${path}`, {
     ...init,
@@ -40,10 +42,23 @@ async function exists(path) {
   }
 }
 
+async function waitForReady(path, label, attempts = 40) {
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    const item = await exists(path);
+    if (item && (!item.status || item.status === "available")) return item;
+    if (item?.status === "failed" || item?.error) {
+      throw new Error(`${label} failed to provision: ${item.error || item.status}`);
+    }
+    await sleep(500);
+  }
+  throw new Error(`${label} did not become ready in time.`);
+}
+
 async function ensureDatabase() {
-  const current = await exists(`/databases/${encodeURIComponent(database.id)}`);
+  const path = `/tablesdb/${encodeURIComponent(database.id)}`;
+  const current = await exists(path);
   if (current) return current;
-  return request("/databases", {
+  return request("/tablesdb", {
     method: "POST",
     body: JSON.stringify({
       databaseId: database.id,
@@ -69,46 +84,50 @@ async function ensureTable(table) {
     });
   }
 
-  for (const column of table.columns) {
-    await ensureColumn(table.id, column);
-  }
-  for (const index of table.indexes) {
-    await ensureIndex(table.id, index);
-  }
+  for (const column of table.columns) await ensureColumn(table.id, column);
+  for (const index of table.indexes) await ensureIndex(table.id, index);
 }
 
-function columnEndpoint(tableId, type) {
-  const normalized = type === "datetime" ? "datetime" : type;
-  return `/tablesdb/${encodeURIComponent(database.id)}/tables/${encodeURIComponent(tableId)}/columns/${normalized}`;
+function columnCreatePath(tableId, type) {
+  return `/tablesdb/${encodeURIComponent(database.id)}/tables/${encodeURIComponent(tableId)}/columns/${type}`;
+}
+
+function columnPath(tableId, key) {
+  return `/tablesdb/${encodeURIComponent(database.id)}/tables/${encodeURIComponent(tableId)}/columns/${encodeURIComponent(key)}`;
 }
 
 async function ensureColumn(tableId, column) {
-  const path = `/tablesdb/${encodeURIComponent(database.id)}/tables/${encodeURIComponent(tableId)}/columns/${encodeURIComponent(column.key)}`;
-  if (await exists(path)) return;
+  const path = columnPath(tableId, column.key);
+  if (await exists(path)) return waitForReady(path, `${tableId}.${column.key}`);
+
   const payload = {
     key: column.key,
     required: column.required,
     array: Boolean(column.array),
   };
   if (column.type === "string") payload.size = column.size;
-  await request(columnEndpoint(tableId, column.type), {
+
+  await request(columnCreatePath(tableId, column.type), {
     method: "POST",
     body: JSON.stringify(payload),
   });
+  return waitForReady(path, `${tableId}.${column.key}`);
 }
 
 async function ensureIndex(tableId, index) {
   const path = `/tablesdb/${encodeURIComponent(database.id)}/tables/${encodeURIComponent(tableId)}/indexes/${encodeURIComponent(index.key)}`;
-  if (await exists(path)) return;
+  if (await exists(path)) return waitForReady(path, `${tableId}.${index.key}`);
+
   await request(`/tablesdb/${encodeURIComponent(database.id)}/tables/${encodeURIComponent(tableId)}/indexes`, {
     method: "POST",
     body: JSON.stringify({
       key: index.key,
       type: index.type,
-      attributes: index.attributes,
+      columns: index.attributes,
       orders: index.attributes.map(() => "ASC"),
     }),
   });
+  return waitForReady(path, `${tableId}.${index.key}`);
 }
 
 async function ensureBucket() {
