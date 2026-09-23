@@ -26,7 +26,7 @@ accepted for admin access.
 - Admin authorization is checked server-side.
 - Recovery responses are deliberately generic to prevent account enumeration.
 - Password changes require 12 or more characters.
-- Password changes revoke the user's active sessions.
+- Password changes revoke refresh sessions and clear the current website session. Already-issued access tokens expire according to Supabase Auth settings.
 - Login and recovery requests require Cloudflare Turnstile.
 - Auth POST endpoints reject cross-origin requests.
 
