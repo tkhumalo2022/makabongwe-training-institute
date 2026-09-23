@@ -15,10 +15,10 @@ type ApiResponse = {
   message?: string;
 };
 
-export default function LoginForm({ siteKey, next }: LoginFormProps) {
+export default function LoginForm({\n  siteKey,\n  next,\n  initialMessage = "",\n}: LoginFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(initialMessage);
   const [busy, setBusy] = useState<"login" | "magic" | "recovery" | null>(null);
 
   function turnstileToken() {
