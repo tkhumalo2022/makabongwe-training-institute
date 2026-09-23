@@ -8,6 +8,7 @@ import styles from "./auth.module.css";
 type LoginFormProps = {
   siteKey: string;
   next: string;
+  initialMessage?: string;
 };
 
 type ApiResponse = {
@@ -15,7 +16,11 @@ type ApiResponse = {
   message?: string;
 };
 
-export default function LoginForm({\n  siteKey,\n  next,\n  initialMessage = "",\n}: LoginFormProps) {
+export default function LoginForm({
+  siteKey,
+  next,
+  initialMessage = "",
+}: LoginFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const [message, setMessage] = useState(initialMessage);
