@@ -18,8 +18,8 @@ export default async function ResetPasswordPage() {
         <p className={styles.eyebrow}>Account recovery</p>
         <h1 id="reset-password-title">Choose a new password</h1>
         <p className={styles.intro}>
-          Use at least 12 characters. After the change, all current sessions are
-          signed out for safety.
+          Use at least 12 characters. You will be signed out after the change
+          and will sign in again with the new password.
         </p>
         <ResetPasswordForm />
       </section>
