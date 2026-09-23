@@ -31,7 +31,15 @@ export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
           Secure access for authorized Makabongwe staff. Your password is never
           stored by this website.
         </p>
-        <LoginForm\n          siteKey={siteKey}\n          next={next}\n          initialMessage={\n            params.reset === "1"\n              ? "Password updated. Sign in with your new password."\n              : ""\n          }\n        />
+        <LoginForm
+          siteKey={siteKey}
+          next={next}
+          initialMessage={
+            params.reset === "1"
+              ? "Password updated. Sign in with your new password."
+              : ""
+          }
+        />
         <p className={styles.securityNote}>
           Protected with secure sessions, account allowlisting and Cloudflare
           Turnstile.
