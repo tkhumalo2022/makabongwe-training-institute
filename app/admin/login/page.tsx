@@ -5,12 +5,12 @@ import LoginForm from "./LoginForm";
 import styles from "./auth.module.css";
 
 export const metadata: Metadata = {
-  title: "Admin sign in | Makabongwe Training Institute",
+  title: "Admin sign in",
   robots: { index: false, follow: false },
 };
 
 type LoginPageProps = {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; reset?: string }>;
 };
 
 export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
@@ -31,7 +31,7 @@ export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
           Secure access for authorized Makabongwe staff. Your password is never
           stored by this website.
         </p>
-        <LoginForm siteKey={siteKey} next={next} />
+        <LoginForm\n          siteKey={siteKey}\n          next={next}\n          initialMessage={\n            params.reset === "1"\n              ? "Password updated. Sign in with your new password."\n              : ""\n          }\n        />
         <p className={styles.securityNote}>
           Protected with secure sessions, account allowlisting and Cloudflare
           Turnstile.
