@@ -4,7 +4,7 @@ import ResetPasswordForm from "./ResetPasswordForm";
 import styles from "../login/auth.module.css";
 
 export const metadata: Metadata = {
-  title: "Reset admin password | Makabongwe Training Institute",
+  title: "Reset admin password",
   robots: { index: false, follow: false },
 };
 
