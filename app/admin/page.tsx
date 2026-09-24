@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requireAdmin } from "@/app/lib/admin-auth";
 import { getAdminDashboardData } from "@/app/lib/admin-dashboard";
-import styles from "./admin.module.css";
+import styles from "./admin.module.css";\nimport { AdminAssistant } from "./admin-assistant";
 
 export const metadata: Metadata = {
   title: "Admin | Makabongwe Training Institute",
@@ -151,6 +151,15 @@ export default async function AdminPage() {
             </div>
           </section>
 
+          <div className={styles.startHere}>
+            <strong>Start here</strong>
+            <p>
+              Check the “What needs attention” section first. New enquiries come
+              before enrolment reviews, and payment problems come after that. If
+              you are unsure, tap “Help me” in the bottom-right corner.
+            </p>
+          </div>
+
           <section className={styles.metrics} aria-label="Operations summary">
             <article className={styles.metric}>
               <p className={styles.metricLabel}>Programme enquiries</p>
@@ -198,8 +207,8 @@ export default async function AdminPage() {
               <div className={styles.cardHeader}>
                 <div>
                   <p className={styles.eyebrow}>Priority</p>
-                  <h2>Action queue</h2>
-                  <p>What should get staff attention first.</p>
+                  <h2>What needs attention</h2>
+                  <p>Simple next steps, in priority order.</p>
                 </div>
               </div>
 
@@ -432,6 +441,11 @@ export default async function AdminPage() {
           </div>
         </div>
       </div>
+      <AdminAssistant
+        newEnquiries={dashboard.enquiries.newCount}
+        enrolmentsToReview={dashboard.enrolments.reviewCount}
+        paymentIssues={dashboard.payments.failed}
+      />
     </main>
   );
 }
