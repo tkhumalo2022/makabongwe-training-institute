@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import "./mobile.css";
 import "./mobile-header-fix.css";
+import { RouteChrome } from "./components/route-chrome";
 import { SiteFooter } from "./components/site-footer";
 import { SiteHeader } from "./components/site-header";
 
@@ -65,9 +66,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} antialiased`}>
-        <SiteHeader />
-        {children}
-        <SiteFooter />
+        <RouteChrome
+          header={<SiteHeader />}
+          footer={<SiteFooter />}
+        >
+          {children}
+        </RouteChrome>
       </body>
     </html>
   );
