@@ -4,10 +4,12 @@ import { redirect } from "next/navigation";
 const ACCESS_COOKIE = "mti_admin_access";
 const REFRESH_COOKIE = "mti_admin_refresh";
 const DEFAULT_REFRESH_MAX_AGE = 60 * 60 * 24 * 30;
+const PREVIEW_DEMO_TOKEN = "__mti_preview_demo__";
 
 export type AdminUser = {
   id: string;
   email: string;
+  demo?: boolean;
 };
 
 type SupabaseUser = {
@@ -27,6 +29,10 @@ type TokenResponse = {
 
 function readEnv(name: string) {
   return process.env[name]?.trim() ?? "";
+}
+
+export function demoLoginAvailable() {
+  return process.env.VERCEL_ENV === "preview";
 }
 
 function getAuthConfig() {
@@ -128,6 +134,15 @@ export async function sendPasswordRecovery(email: string, redirectTo: string) {
 export async function validateAccessToken(
   accessToken: string,
 ): Promise<AdminUser | null> {
+  if (accessToken === PREVIEW_DEMO_TOKEN) {
+    if (!demoLoginAvailable()) return null;
+    return {
+      id: "preview-demo",
+      email: "demo@makabongwe.local",
+      demo: true,
+    };
+  }
+
   const response = await authFetch("/auth/v1/user", { method: "GET" }, accessToken);
   if (!response?.ok) return null;
 
@@ -168,6 +183,8 @@ export async function revokeSession(
   accessToken: string,
   scope: "local" | "global" = "local",
 ) {
+  if (accessToken === PREVIEW_DEMO_TOKEN) return;
+
   await authFetch(
     "/auth/v1/logout?scope=" + scope,
     { method: "POST", body: "{}" },
@@ -196,6 +213,20 @@ export async function setAuthCookies(tokens: TokenResponse) {
     maxAge: DEFAULT_REFRESH_MAX_AGE,
   });
 
+  return true;
+}
+
+export async function setDemoAuthCookie() {
+  if (!demoLoginAvailable()) return false;
+
+  const store = await cookies();
+  store.set(cookieName(ACCESS_COOKIE), PREVIEW_DEMO_TOKEN, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: true,
+    path: "/",
+    maxAge: 60 * 60,
+  });
   return true;
 }
 
