@@ -1,0 +1,273 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 48px 20px;
+  background:
+    radial-gradient(circle at 85% 8%, rgba(184, 223, 53, .12), transparent 28%),
+    linear-gradient(145deg, #031f17, #073d2a);
+}
+
+.card {
+  width: min(100%, 480px);
+  padding: clamp(28px, 6vw, 52px);
+  background: #fbfaf5;
+  color: #101612;
+  border-top: 8px solid #f0b323;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, .26);
+}
+
+.brandMark {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  background: #073d2a;
+  color: #b8df35;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.eyebrow {
+  margin: 26px 0 12px;
+  color: #073d2a;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.card h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(40px, 8vw, 58px);
+  line-height: .98;
+  letter-spacing: -.04em;
+  text-transform: uppercase;
+}
+
+.intro {
+  margin: 18px 0 28px;
+  color: #68716a;
+  line-height: 1.65;
+}
+
+.form {
+  display: grid;
+  gap: 17px;
+}
+
+.form label {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.form input {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  border: 1px solid #c8cec6;
+  border-radius: 0;
+  background: white;
+  color: #101612;
+}
+
+.form input:focus-visible,
+.primary:focus-visible,
+.secondary:focus-visible,
+.textButton:focus-visible {
+  outline: 3px solid #b8df35;
+  outline-offset: 3px;
+}
+
+.primary,
+.secondary {
+  min-height: 52px;
+  border: 1px solid #073d2a;
+  padding: 0 18px;
+  font-weight: 800;
+}
+
+.primary {
+  background: #073d2a;
+  color: white;
+}
+
+.primary:hover:not(:disabled) {
+  background: #0b5137;
+}
+
+.secondary {
+  background: transparent;
+  color: #073d2a;
+}
+
+.secondary:hover:not(:disabled) {
+  background: #edf5e9;
+}
+
+.primary:disabled,
+.secondary:disabled,
+.textButton:disabled {
+  cursor: not-allowed;
+  opacity: .58;
+}
+
+.textButton {
+  justify-self: center;
+  border: 0;
+  background: transparent;
+  color: #073d2a;
+  font-weight: 750;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #68716a;
+  font-size: 12px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: #d7dbd4;
+}
+
+.message,
+.configWarning {
+  margin: 0;
+  padding: 13px 14px;
+  border-left: 4px solid #f0b323;
+  background: #f4f0e5;
+  color: #344139;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.configWarning {
+  border-left-color: #a1261e;
+}
+
+.securityNote {
+  margin: 26px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid #d7dbd4;
+  color: #68716a;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.adminPage {
+  min-height: calc(100vh - 88px);
+  padding: 70px 20px;
+  background: #f4f0e5;
+}
+
+.adminShell {
+  width: min(900px, 100%);
+  margin: 0 auto;
+}
+
+.adminHeader {
+  padding: clamp(28px, 6vw, 52px);
+  background: #031f17;
+  color: white;
+  border-top: 8px solid #f0b323;
+}
+
+.adminHeader h1 {
+  margin: 8px 0 14px;
+  font-family: var(--font-display);
+  font-size: clamp(42px, 7vw, 70px);
+  line-height: .95;
+  text-transform: uppercase;
+}
+
+.adminHeader p {
+  max-width: 620px;
+  color: #d0d7d1;
+  line-height: 1.7;
+}
+
+.adminPanel {
+  margin-top: 22px;
+  padding: clamp(24px, 5vw, 42px);
+  background: white;
+  border: 1px solid #d7dbd4;
+}
+
+.status {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 20px;
+  color: #073d2a;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.status::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #268444;
+}
+
+.adminActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.adminActions a,
+.adminActions button {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  border: 1px solid #073d2a;
+  background: transparent;
+  color: #073d2a;
+  font-weight: 750;
+}
+
+.adminActions button {
+  background: #073d2a;
+  color: white;
+}
+
+@media (max-width: 540px) {
+  .page {
+    padding: 20px 14px;
+  }
+
+  .card {
+    padding: 28px 22px;
+  }
+
+  .adminActions {
+    display: grid;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primary,
+  .secondary,
+  .textButton {
+    scroll-behavior: auto;
+    transition: none;
+  }
+}
