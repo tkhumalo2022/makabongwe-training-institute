@@ -1,5 +1,7 @@
 import {
+  demoLoginAvailable,
   setAuthCookies,
+  setDemoAuthCookie,
   signInWithPassword,
 } from "@/app/lib/admin-auth";
 import { isSameOrigin, noStoreJson } from "@/app/lib/request-security";
@@ -18,6 +20,20 @@ export async function POST(request: Request) {
     payload = (await request.json()) as Record<string, unknown>;
   } catch {
     return noStoreJson({ ok: false, message: "Invalid request." }, 400);
+  }
+
+  if (payload.demo === true) {
+    if (!demoLoginAvailable()) {
+      return noStoreJson({ ok: false, message: "Demo login is unavailable." }, 403);
+    }
+
+    const ok = await setDemoAuthCookie();
+    return noStoreJson(
+      ok
+        ? { ok: true }
+        : { ok: false, message: "Demo login is unavailable." },
+      ok ? 200 : 403,
+    );
   }
 
   const email =
