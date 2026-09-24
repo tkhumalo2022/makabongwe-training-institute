@@ -37,7 +37,7 @@ export function AdminAssistant({
   const priorityReply = useMemo(() => {
     const tasks: string[] = [];
     if ((newEnquiries ?? 0) > 0) {
-      tasks.push(`${newEnquiries} new enquiry${newEnquiries === 1 ? "" : "ies"}`);
+      tasks.push(`${newEnquiries} new ${newEnquiries === 1 ? "enquiry" : "enquiries"}`);
     }
     if ((enrolmentsToReview ?? 0) > 0) {
       tasks.push(`${enrolmentsToReview} enrolment${enrolmentsToReview === 1 ? "" : "s"} to review`);
