@@ -15,6 +15,30 @@ test("admin login is protected by Turnstile and an allowlist", async () => {
   assert.match(authLib, /validateAccessToken/);
 });
 
+test("preview demo login cannot activate in production", async () => {
+  const [loginRoute, authLib, loginPage] = await Promise.all([
+    read("app/api/auth/login/route.ts"),
+    read("app/lib/admin-auth.ts"),
+    read("app/admin/login/page.tsx"),
+  ]);
+
+  assert.match(authLib, /process\.env\.VERCEL_ENV === "preview"/);
+  assert.match(loginRoute, /payload\.demo === true/);
+  assert.match(loginRoute, /demoLoginAvailable\(\)/);
+  assert.match(loginPage, /demoEnabled=\{demoEnabled\}/);
+});
+
+test("preview demo session has no Supabase refresh token", async () => {
+  const authLib = await read("app/lib/admin-auth.ts");
+
+  assert.match(authLib, /setDemoAuthCookie/);
+  assert.match(authLib, /PREVIEW_DEMO_TOKEN/);
+  assert.doesNotMatch(
+    authLib.match(/export async function setDemoAuthCookie\(\)[\s\S]*?\n\}/)?.[0] ?? "",
+    /REFRESH_COOKIE/,
+  );
+});
+
 test("admin session cookies are httpOnly, same-site and secure in production", async () => {
   const authLib = await read("app/lib/admin-auth.ts");
 
