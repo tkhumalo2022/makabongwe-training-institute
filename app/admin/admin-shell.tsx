@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { AdminUser } from "@/app/lib/admin-auth";
-import styles from "./admin.module.css";\nimport { AdminAssistant } from "./admin-assistant";
+import styles from "./admin.module.css";
+import { AdminAssistant } from "./admin-assistant";
 
 type AdminShellProps = {
   user: AdminUser;
