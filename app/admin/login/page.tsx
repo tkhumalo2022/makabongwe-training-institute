@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { currentAdminUser, safeNextPath } from "@/app/lib/admin-auth";
+import {
+  currentAdminUser,
+  demoLoginAvailable,
+  safeNextPath,
+} from "@/app/lib/admin-auth";
 import LoginForm from "./LoginForm";
 import styles from "./auth.module.css";
 
@@ -20,6 +24,7 @@ export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
   if (user) redirect(next);
 
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? "";
+  const demoEnabled = demoLoginAvailable();
 
   return (
     <main className={styles.page}>
@@ -34,6 +39,7 @@ export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
         <LoginForm
           siteKey={siteKey}
           next={next}
+          demoEnabled={demoEnabled}
           initialMessage={
             params.reset === "1"
               ? "Password updated. Sign in with your new password."
