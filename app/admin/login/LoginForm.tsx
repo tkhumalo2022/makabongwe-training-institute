@@ -8,6 +8,7 @@ import styles from "./auth.module.css";
 type LoginFormProps = {
   siteKey: string;
   next: string;
+  demoEnabled: boolean;
   initialMessage?: string;
 };
 
@@ -19,12 +20,13 @@ type ApiResponse = {
 export default function LoginForm({
   siteKey,
   next,
+  demoEnabled,
   initialMessage = "",
 }: LoginFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const [message, setMessage] = useState(initialMessage);
-  const [busy, setBusy] = useState<"login" | "magic" | "recovery" | null>(null);
+  const [busy, setBusy] = useState<"login" | "magic" | "recovery" | "demo" | null>(null);
 
   function turnstileToken() {
     return (
@@ -52,6 +54,25 @@ export default function LoginForm({
     });
     const data = (await response.json().catch(() => ({}))) as ApiResponse;
     return { response, data };
+  }
+
+  async function handleDemoLogin() {
+    setMessage("");
+    setBusy("demo");
+
+    try {
+      const { response, data } = await post("/api/auth/login", { demo: true });
+      if (response.ok && data.ok) {
+        router.replace(next);
+        router.refresh();
+        return;
+      }
+      setMessage(data.message ?? "Demo sign in failed. Please try again.");
+    } catch {
+      setMessage("Demo sign in is temporarily unavailable. Please try again.");
+    } finally {
+      setBusy(null);
+    }
   }
 
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
@@ -135,6 +156,25 @@ export default function LoginForm({
       ) : null}
 
       <form ref={formRef} className={styles.form} onSubmit={handleLogin}>
+        {demoEnabled ? (
+          <>
+            <button
+              className={styles.secondary}
+              type="button"
+              disabled={busy !== null}
+              onClick={handleDemoLogin}
+            >
+              {busy === "demo" ? "Opening demo…" : "Continue with demo admin"}
+            </button>
+            <p className={styles.securityNote}>
+              Preview only. This demo session has no live Supabase admin access.
+            </p>
+            <div className={styles.divider} aria-hidden="true">
+              <span>real admin</span>
+            </div>
+          </>
+        ) : null}
+
         <label>
           <span>Email address</span>
           <input
@@ -168,7 +208,7 @@ export default function LoginForm({
           />
         ) : (
           <p className={styles.configWarning}>
-            Login protection is being configured. Please try again shortly.
+            Real admin login protection is still being configured.
           </p>
         )}
 
