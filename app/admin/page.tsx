@@ -82,6 +82,7 @@ export default async function AdminPage() {
             <a href="#overview">Overview</a>
             <a href="#enquiries">Enquiries</a>
             <a href="#enrolments">Enrolments</a>
+            <a href="/admin/learners">Learner records</a>
             <a href="#programmes">Programmes</a>
             <a href="#compliance">Quality & records</a>
           </nav>
@@ -322,13 +323,12 @@ export default async function AdminPage() {
               <article className={styles.module}>
                 <div className={styles.moduleTop}>
                   <span className={styles.moduleIndex}>03 / LEARNERS</span>
-                  <span className={styles.demoBadge}>Build next</span>
+                  <span className={styles.badge}>Foundation live</span>
                 </div>
                 <h3>Learner records & evidence</h3>
                 <p>
-                  Extend the existing course registers with attendance,
-                  assessments, moderation, supporting documents and controlled
-                  evidence access.
+                  Use the protected learner register as the source of truth, then add attendance,
+                  assessments, moderation and controlled evidence access.
                 </p>
               </article>
 
