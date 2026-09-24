@@ -18,18 +18,22 @@ export default async function AdminPage() {
           <p className={styles.eyebrow}>Makabongwe Training Institute</p>
           <h1>Admin area</h1>
           <p>
-            Signed in as {user.email}. This area is protected server-side and
-            only authorized staff accounts can enter.
+            Signed in as {user.email}.{" "}
+            {user.demo
+              ? "This is a preview-only demo session with no live Supabase admin access."
+              : "This area is protected server-side and only authorized staff accounts can enter."}
           </p>
         </section>
 
         <section className={styles.adminPanel}>
-          <p className={styles.status}>Secure session active</p>
-          <h2>Admin foundation is ready</h2>
+          <p className={styles.status}>
+            {user.demo ? "Preview demo session" : "Secure session active"}
+          </p>
+          <h2>{user.demo ? "Demo admin is ready" : "Admin foundation is ready"}</h2>
           <p>
-            The secure login, recovery and session layer is in place. Content
-            management controls can be added here without exposing privileged
-            Supabase credentials to the browser.
+            {user.demo
+              ? "Use this preview to test the admin experience safely. Live content-management actions remain unavailable until real staff authentication is configured and verified."
+              : "The secure login, recovery and session layer is in place. Content management controls can be added here without exposing privileged Supabase credentials to the browser."}
           </p>
 
           <div className={styles.adminActions}>
