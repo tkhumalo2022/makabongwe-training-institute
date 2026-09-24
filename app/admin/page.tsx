@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requireAdmin } from "@/app/lib/admin-auth";
 import { getAdminDashboardData } from "@/app/lib/admin-dashboard";
-import styles from "./admin.module.css";\nimport { AdminAssistant } from "./admin-assistant";
+import styles from "./admin.module.css";
+import { AdminAssistant } from "./admin-assistant";
 
 export const metadata: Metadata = {
   title: "Admin | Makabongwe Training Institute",
