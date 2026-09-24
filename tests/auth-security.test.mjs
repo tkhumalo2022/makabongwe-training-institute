@@ -72,3 +72,25 @@ test("client login code never imports Supabase service credentials", async () =>
   const client = await read("app/admin/login/LoginForm.tsx");
   assert.doesNotMatch(client, /SUPABASE_SECRET_KEY|SUPABASE_SERVICE_ROLE_KEY/);
 });
+
+
+test("learner records require admin authentication and hide sensitive identity fields", async () => {
+  const [page, reader] = await Promise.all([
+    read("app/admin/learners/page.tsx"),
+    read("app/lib/admin-learners.ts"),
+  ]);
+
+  assert.match(page, /requireAdmin\("\/admin\/learners"\)/);
+  assert.match(reader, /all_enrolled_students/);
+  assert.doesNotMatch(
+    reader,
+    /select=[^"\n]*(id_passport_number|date_of_birth|email|phone|address)/,
+  );
+});
+
+test("internal admin routes suppress public website chrome", async () => {
+  const chrome = await read("app/components/route-chrome.tsx");
+
+  assert.match(chrome, /pathname\?\.startsWith\("\/admin\/"\)/);
+  assert.match(chrome, /if \(isInternalRoute\)/);
+});
