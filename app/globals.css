@@ -18,6 +18,16 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-geist-sans), Arial, sans-serif; }
+/* Internal admin routes use their own application shell. */
+body:has([data-internal-admin]) > .site-header,
+body:has([data-internal-admin]) > .site-footer {
+  display: none;
+}
+
+[data-internal-admin] {
+  min-height: 100vh;
+}
+
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
 button, input, select, textarea { font: inherit; }
