@@ -89,8 +89,12 @@ test("learner records require admin authentication and hide sensitive identity f
 });
 
 test("internal admin routes suppress public website chrome", async () => {
-  const chrome = await read("app/components/route-chrome.tsx");
+  const [layout, globals] = await Promise.all([
+    read("app/admin/layout.tsx"),
+    read("app/globals.css"),
+  ]);
 
-  assert.match(chrome, /pathname\?\.startsWith\("\/admin\/"\)/);
-  assert.match(chrome, /if \(isInternalRoute\)/);
+  assert.match(layout, /data-internal-admin/);
+  assert.match(globals, /body:has\(\[data-internal-admin\]\) > \.site-header/);
+  assert.match(globals, /body:has\(\[data-internal-admin\]\) > \.site-footer/);
 });
