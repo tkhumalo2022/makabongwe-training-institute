@@ -79,7 +79,7 @@ export default async function AdminPage() {
           </div>
 
           <nav className={styles.nav} aria-label="Admin sections">
-            <a href="#overview">Overview</a>
+            <a className={styles.navActive} href="#overview">Overview</a>
             <a href="#enquiries">Enquiries</a>
             <a href="#enrolments">Enrolments</a>
             <a href="/admin/learners">Learner records</a>
