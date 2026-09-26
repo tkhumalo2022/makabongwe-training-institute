@@ -26,6 +26,7 @@ export default function LoginForm({
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const [message, setMessage] = useState(initialMessage);
+  const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState<"login" | "magic" | "recovery" | "demo" | null>(null);
 
   function turnstileToken() {
@@ -117,8 +118,10 @@ export default function LoginForm({
     const email = String(form.get("email") ?? "").trim();
     const token = turnstileToken();
 
-    if (!email) {
-      setMessage("Enter your email address first.");
+    const emailInput = formRef.current?.elements.namedItem("email") as HTMLInputElement | null;
+    if (!email || !emailInput?.checkValidity()) {
+      setMessage("Enter a valid email address first.");
+      emailInput?.focus();
       return;
     }
     if (!token) {
@@ -128,15 +131,14 @@ export default function LoginForm({
 
     setBusy(mode);
     try {
-      const { data } = await post("/api/auth/request-link", {
+      const { response, data } = await post("/api/auth/request-link", {
         email,
         mode,
         turnstileToken: token,
       });
-      setMessage(
-        data.message ??
-          "If that email is authorized, a secure sign-in message is on its way.",
-      );
+      setMessage(data.message ?? (response.ok
+        ? "If that email is authorized, check your inbox and spam folder for the link."
+        : "We could not send the email right now. Please try again."));
       resetTurnstile();
     } catch {
       setMessage("We could not send the email right now. Please try again.");
@@ -155,11 +157,11 @@ export default function LoginForm({
         />
       ) : null}
 
-      <form ref={formRef} className={styles.form} onSubmit={handleLogin}>
+      <form ref={formRef} className={styles.form} onSubmit={handleLogin} method="post" action="/api/auth/login" aria-busy={busy !== null}>
         {demoEnabled ? (
           <>
             <button
-              className={styles.secondary}
+              className={styles.primary}
               type="button"
               disabled={busy !== null}
               onClick={handleDemoLogin}
@@ -167,7 +169,7 @@ export default function LoginForm({
               {busy === "demo" ? "Opening demo…" : "Continue with demo admin"}
             </button>
             <p className={styles.securityNote}>
-              Preview only. This demo session has no live Supabase admin access.
+              Explore with sample records. No password is needed and real learner records stay private.
             </p>
             <div className={styles.divider} aria-hidden="true">
               <span>real admin</span>
@@ -187,16 +189,22 @@ export default function LoginForm({
           />
         </label>
 
-        <label>
-          <span>Password</span>
+        <div className={styles.passwordField}>
+          <label htmlFor="admin-password">Password</label>
+          <div className={styles.passwordControl}>
           <input
-            type="password"
+            id="admin-password"
+            type={showPassword ? "text" : "password"}
             name="password"
             autoComplete="current-password"
             maxLength={256}
             required
           />
-        </label>
+          <button type="button" className={styles.passwordToggle} aria-controls="admin-password" aria-pressed={showPassword} onClick={() => setShowPassword(value => !value)}>
+            {showPassword ? "Hide password" : "Show password"}
+          </button>
+          </div>
+        </div>
 
         {siteKey ? (
           <div
@@ -208,7 +216,7 @@ export default function LoginForm({
           />
         ) : (
           <p className={styles.configWarning}>
-            Real admin login protection is still being configured.
+            Staff sign-in is not ready yet. {demoEnabled ? "Use the demo above to explore the admin." : "Please contact the site administrator for help."}
           </p>
         )}
 

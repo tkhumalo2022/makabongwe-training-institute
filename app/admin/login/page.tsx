@@ -33,8 +33,7 @@ export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
         <p className={styles.eyebrow}>Makabongwe Training Institute</p>
         <h1 id="admin-login-title">Admin sign in</h1>
         <p className={styles.intro}>
-          Secure access for authorized Makabongwe staff. Your password is never
-          stored by this website.
+          Sign in to check enquiries, enrolments and learner records.
         </p>
         <LoginForm
           siteKey={siteKey}
@@ -47,8 +46,8 @@ export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
           }
         />
         <p className={styles.securityNote}>
-          Protected with secure sessions, account allowlisting and Cloudflare
-          Turnstile.
+          Use your approved staff email. If you forget your password, request a
+          reset email or a secure sign-in link.
         </p>
       </section>
     </main>

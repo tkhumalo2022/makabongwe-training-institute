@@ -14,7 +14,11 @@ export async function POST(request: Request) {
 
   let payload: Record<string, unknown>;
   try {
-    payload = (await request.json()) as Record<string, unknown>;
+    const parsed: unknown = await request.json();
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return noStoreJson({ ok: false, message: "Invalid request." }, 400);
+    }
+    payload = parsed as Record<string, unknown>;
   } catch {
     return noStoreJson({ ok: false, message: "Invalid request." }, 400);
   }

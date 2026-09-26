@@ -53,7 +53,7 @@ export default function ResetPasswordForm() {
   }
 
   return (
-    <form className={styles.form} onSubmit={submit}>
+    <form className={styles.form} onSubmit={submit} method="post" action="/api/auth/update-password" aria-busy={busy}>
       <label>
         <span>New password</span>
         <input

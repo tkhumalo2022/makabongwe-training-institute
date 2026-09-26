@@ -47,6 +47,9 @@ export function AdminAssistant({
     }
 
     if (!tasks.length) {
+      if ([newEnquiries, enrolmentsToReview, paymentIssues].some(value => value === null)) {
+        return "Open Overview to check what needs attention. I cannot see the enquiry, enrolment and payment totals on this page.";
+      }
       return "There is nothing urgent showing right now. Start by checking recent enquiries, then learner records.";
     }
 
@@ -185,7 +188,7 @@ export function AdminAssistant({
           </div>
 
           <div className={styles.assistantBody}>
-            <div className={styles.assistantReply}>
+            <div className={styles.assistantReply} role="status" aria-live="polite">
               <span>Assistant</span>
               <p>{reply.text}</p>
               {reply.href && reply.linkLabel ? (
