@@ -1,0 +1,55 @@
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import {
+  currentAdminUser,
+  demoLoginAvailable,
+  safeNextPath,
+} from "@/app/lib/admin-auth";
+import LoginForm from "./LoginForm";
+import styles from "./auth.module.css";
+
+export const metadata: Metadata = {
+  title: "Admin sign in",
+  robots: { index: false, follow: false },
+};
+
+type LoginPageProps = {
+  searchParams: Promise<{ next?: string; reset?: string }>;
+};
+
+export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
+  const params = await searchParams;
+  const next = safeNextPath(params.next);
+  const user = await currentAdminUser();
+  if (user) redirect(next);
+
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? "";
+  const demoEnabled = demoLoginAvailable();
+
+  return (
+    <main className={styles.page}>
+      <section className={styles.card} aria-labelledby="admin-login-title">
+        <div className={styles.brandMark}>MTI</div>
+        <p className={styles.eyebrow}>Makabongwe Training Institute</p>
+        <h1 id="admin-login-title">Admin sign in</h1>
+        <p className={styles.intro}>
+          Sign in to check enquiries, enrolments and learner records.
+        </p>
+        <LoginForm
+          siteKey={siteKey}
+          next={next}
+          demoEnabled={demoEnabled}
+          initialMessage={
+            params.reset === "1"
+              ? "Password updated. Sign in with your new password."
+              : ""
+          }
+        />
+        <p className={styles.securityNote}>
+          Use your approved staff email. If you forget your password, request a
+          reset email or a secure sign-in link.
+        </p>
+      </section>
+    </main>
+  );
+}
