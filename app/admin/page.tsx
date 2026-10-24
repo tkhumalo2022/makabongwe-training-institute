@@ -82,7 +82,7 @@ export default async function AdminPage() {
           <nav className={styles.nav} aria-label="Admin sections">
             <a className={styles.navActive} href="#overview">Overview</a>
             <a href="#enquiries">Enquiries</a>
-            <a href="#enrolments">Enrolments</a>
+            <a href="#enrolments">Applications</a>
             <a href="/admin/learners">Learner records</a>
             <a href="#programmes">Programmes</a>
             <a href="#compliance">Quality & records</a>
@@ -173,12 +173,12 @@ export default async function AdminPage() {
             </article>
 
             <article className={styles.metric}>
-              <p className={styles.metricLabel}>Enrolments</p>
+              <p className={styles.metricLabel}>Application records</p>
               <p className={styles.metricValue}>
                 {displayCount(dashboard.enrolments.total)}
               </p>
               <p className={styles.metricHint}>
-                {displayCount(dashboard.enrolments.reviewCount)} submitted or under review
+                {displayCount(dashboard.enrolments.reviewCount)} need review · {displayCount(dashboard.enrolments.acceptedCount)} accepted
               </p>
             </article>
 
@@ -323,7 +323,7 @@ export default async function AdminPage() {
                   <span className={styles.moduleIndex}>02 / ADMISSIONS</span>
                   <span className={styles.badge}>Foundation live</span>
                 </div>
-                <h3>Enrolments & intakes</h3>
+                <h3>Applications & intakes</h3>
                 <p>
                   Track applicants from submitted details through review,
                   acceptance or rejection, grouped by programme and intake.
@@ -410,7 +410,7 @@ export default async function AdminPage() {
               <div className={styles.cardHeader}>
                 <div>
                   <p className={styles.eyebrow}>Admissions</p>
-                  <h2>Recent enrolments</h2>
+                  <h2>Recent applications</h2>
                   <p>
                     {user.demo
                       ? "Preview examples only — no live learner data is shown."
