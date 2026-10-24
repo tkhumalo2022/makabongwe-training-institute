@@ -75,14 +75,15 @@ export default async function AdminPage() {
       <div className={styles.shell}>
         <aside className={styles.sidebar}>
           <div className={styles.sidebarBrand}>
+            <img className={styles.sidebarLogo} src="/images/makabongwe-logo.webp" alt="Makabongwe Training Institute logo" width={80} height={80} />
             <strong>Makabongwe Admin</strong>
             <span>Training operations</span>
           </div>
 
           <nav className={styles.nav} aria-label="Admin sections">
             <a className={styles.navActive} href="#overview">Overview</a>
-            <a href="#enquiries">Enquiries</a>
-            <a href="#enrolments">Applications</a>
+            <Link href="/admin/enquiries">Enquiries</Link>
+            <Link href="/admin/applications">Applications</Link>
             <a href="/admin/learners">Learner records</a>
             <a href="#programmes">Programmes</a>
             <a href="#compliance">Quality & records</a>
@@ -163,7 +164,7 @@ export default async function AdminPage() {
 
           <section className={styles.metrics} aria-label="Operations summary">
             <article className={styles.metric}>
-              <p className={styles.metricLabel}>Programme enquiries</p>
+              <p className={styles.metricLabel}><Link href="/admin/enquiries">Programme enquiries ↗</Link></p>
               <p className={styles.metricValue}>
                 {displayCount(dashboard.enquiries.total)}
               </p>
@@ -173,7 +174,7 @@ export default async function AdminPage() {
             </article>
 
             <article className={styles.metric}>
-              <p className={styles.metricLabel}>Application records</p>
+              <p className={styles.metricLabel}><Link href="/admin/applications">Application records ↗</Link></p>
               <p className={styles.metricValue}>
                 {displayCount(dashboard.enrolments.total)}
               </p>
