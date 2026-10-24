@@ -98,3 +98,29 @@ test("internal admin routes suppress public website chrome", async () => {
   assert.match(globals, /body:has\(\[data-internal-admin\]\) > \.site-header/);
   assert.match(globals, /body:has\(\[data-internal-admin\]\) > \.site-footer/);
 });
+
+test("official Makabongwe logo is used on the protected staff login", async () => {
+  const [page, styles] = await Promise.all([
+    read("app/admin/login/page.tsx"),
+    read("app/admin/login/auth.module.css"),
+  ]);
+
+  assert.match(page, /\/images\/makabongwe-logo\.webp/);
+  assert.match(page, /demoEnabled=\{demoEnabled\}/);
+  assert.match(styles, /@media \(max-width: 480px\)/);
+  assert.doesNotMatch(page, /brandMark}>MTI/);
+});
+
+test("staff-only dashboard tracks applications without exposing learner details", async () => {
+  const [page, dashboard] = await Promise.all([
+    read("app/admin/page.tsx"),
+    read("app/lib/admin-dashboard.ts"),
+  ]);
+
+  assert.match(page, /requireAdmin\("\/admin"\)/);
+  assert.match(page, /Application records/);
+  assert.match(page, /dashboard\.enrolments\.acceptedCount/);
+  assert.match(dashboard, /"enrollments", "&status=eq\.accepted"/);
+  assert.match(dashboard, /acceptedCount: null/);
+  assert.doesNotMatch(page, /id_passport_number|date_of_birth|application_token_hash/);
+});
