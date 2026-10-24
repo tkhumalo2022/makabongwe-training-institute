@@ -20,6 +20,7 @@ export type AdminDashboardData = {
   enrolments: {
     total: number | null;
     reviewCount: number | null;
+    acceptedCount: number | null;
     recent: RecentItem[];
   };
   payments: {
@@ -64,6 +65,7 @@ const demoData: AdminDashboardData = {
   enrolments: {
     total: 38,
     reviewCount: 8,
+    acceptedCount: 21,
     recent: [
       {
         id: "demo-enrolment-1",
@@ -192,7 +194,7 @@ export async function getAdminDashboardData(
     return {
       dataState: "unavailable",
       enquiries: { total: null, newCount: null, recent: [] },
-      enrolments: { total: null, reviewCount: null, recent: [] },
+      enrolments: { total: null, reviewCount: null, acceptedCount: null, recent: [] },
       payments: { successful: null, failed: null },
       programmes: { published: null, available: null },
     };
@@ -205,6 +207,7 @@ export async function getAdminDashboardData(
       enrolmentTotal,
       submittedEnrolments,
       reviewEnrolments,
+      acceptedEnrolments,
       successfulPayments,
       failedPayments,
       publishedProgrammes,
@@ -217,6 +220,7 @@ export async function getAdminDashboardData(
       countRows(config, "enrollments"),
       countRows(config, "enrollments", "&status=eq.submitted"),
       countRows(config, "enrollments", "&status=eq.under_review"),
+      countRows(config, "enrollments", "&status=eq.accepted"),
       countRows(config, "payments", "&status=eq.success"),
       countRows(config, "payments", "&status=eq.failed"),
       countRows(config, "cms_programmes", "&is_published=eq.true"),
@@ -239,6 +243,7 @@ export async function getAdminDashboardData(
       enrolments: {
         total: enrolmentTotal,
         reviewCount: submittedEnrolments + reviewEnrolments,
+        acceptedCount: acceptedEnrolments,
         recent: enrolmentsRecent,
       },
       payments: {
@@ -259,7 +264,7 @@ export async function getAdminDashboardData(
     return {
       dataState: "unavailable",
       enquiries: { total: null, newCount: null, recent: [] },
-      enrolments: { total: null, reviewCount: null, recent: [] },
+      enrolments: { total: null, reviewCount: null, acceptedCount: null, recent: [] },
       payments: { successful: null, failed: null },
       programmes: { published: null, available: null },
     };

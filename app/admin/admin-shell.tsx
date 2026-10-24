@@ -6,7 +6,7 @@ import { AdminAssistant } from "./admin-assistant";
 
 type AdminShellProps = {
   user: AdminUser;
-  active: "overview" | "learners";
+  active: "overview" | "learners" | "applications" | "enquiries";
   statusText: string;
   statusTone?: "ok" | "demo" | "warn";
   children: ReactNode;
@@ -14,8 +14,8 @@ type AdminShellProps = {
 
 const navItems = [
   { key: "overview", label: "Overview", href: "/admin" },
-  { key: "enquiries", label: "Enquiries", href: "/admin#enquiries" },
-  { key: "enrolments", label: "Enrolments", href: "/admin#enrolments" },
+  { key: "enquiries", label: "Enquiries", href: "/admin/enquiries" },
+  { key: "applications", label: "Applications", href: "/admin/applications" },
   { key: "learners", label: "Learner records", href: "/admin/learners" },
   { key: "programmes", label: "Programmes", href: "/admin#programmes" },
   { key: "quality", label: "Quality & records", href: "/admin#compliance" },
@@ -40,6 +40,7 @@ export function AdminShell({
       <div className={styles.shell}>
         <aside className={styles.sidebar}>
           <div className={styles.sidebarBrand}>
+            <img className={styles.sidebarLogo} src="/images/makabongwe-logo.webp" alt="Makabongwe Training Institute logo" width={80} height={80} />
             <strong>Makabongwe Admin</strong>
             <span>Training operations</span>
           </div>

@@ -64,3 +64,41 @@ test('demo login rejects cross-origin submissions', async () => {
   assert.equal(response.status, 403);
   assert.equal(response.headers.get('set-cookie'), null);
 });
+
+
+test('staff operations routes require login, and preview sessions show only labelled samples', async () => {
+  const routes = [
+    '/admin/applications',
+    '/admin/applications/demo-application-01',
+    '/admin/enquiries',
+  ];
+  for (const route of routes) {
+    const response = await fetch(origin + route, {redirect: 'manual'});
+    assert.ok([302, 303, 307, 308].includes(response.status), route + ' anonymous status');
+    assert.match(response.headers.get('location') ?? '', /\/admin\/login/);
+    assert.equal(response.headers.get('set-cookie'), null);
+  }
+
+  const response = await fetch(origin + '/api/auth/login', {
+    method: 'POST',
+    headers: {origin, 'content-type': 'application/json'},
+    body: '{"demo":true}',
+  });
+  assert.equal(response.status, 200);
+  const cookie = response.headers.getSetCookie().map(value => value.split(';')[0]).join('; ');
+
+  const applications = await fetch(origin + '/admin/applications', {headers: {cookie}});
+  assert.equal(applications.status, 200);
+  const appHtml = await applications.text();
+  assert.match(appHtml, /Preview-only applications/);
+  assert.match(appHtml, /Sample Applicant One/);
+
+  const enquiries = await fetch(origin + '/admin/enquiries', {headers: {cookie}});
+  assert.equal(enquiries.status, 200);
+  const enquiriesHtml = await enquiries.text();
+  assert.match(enquiriesHtml, /Sample enquiries, not real prospects/);
+
+  const record = await fetch(origin + '/admin/applications/demo-application-01', {headers: {cookie}});
+  assert.equal(record.status, 200);
+  assert.match(await record.text(), /Illustrative preview record/);
+});

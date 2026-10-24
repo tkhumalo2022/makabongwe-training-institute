@@ -75,14 +75,15 @@ export default async function AdminPage() {
       <div className={styles.shell}>
         <aside className={styles.sidebar}>
           <div className={styles.sidebarBrand}>
+            <img className={styles.sidebarLogo} src="/images/makabongwe-logo.webp" alt="Makabongwe Training Institute logo" width={80} height={80} />
             <strong>Makabongwe Admin</strong>
             <span>Training operations</span>
           </div>
 
           <nav className={styles.nav} aria-label="Admin sections">
             <a className={styles.navActive} href="#overview">Overview</a>
-            <a href="#enquiries">Enquiries</a>
-            <a href="#enrolments">Enrolments</a>
+            <Link href="/admin/enquiries">Enquiries</Link>
+            <Link href="/admin/applications">Applications</Link>
             <a href="/admin/learners">Learner records</a>
             <a href="#programmes">Programmes</a>
             <a href="#compliance">Quality & records</a>
@@ -163,7 +164,7 @@ export default async function AdminPage() {
 
           <section className={styles.metrics} aria-label="Operations summary">
             <article className={styles.metric}>
-              <p className={styles.metricLabel}>Programme enquiries</p>
+              <p className={styles.metricLabel}><Link href="/admin/enquiries">Programme enquiries ↗</Link></p>
               <p className={styles.metricValue}>
                 {displayCount(dashboard.enquiries.total)}
               </p>
@@ -173,12 +174,12 @@ export default async function AdminPage() {
             </article>
 
             <article className={styles.metric}>
-              <p className={styles.metricLabel}>Enrolments</p>
+              <p className={styles.metricLabel}><Link href="/admin/applications">Application records ↗</Link></p>
               <p className={styles.metricValue}>
                 {displayCount(dashboard.enrolments.total)}
               </p>
               <p className={styles.metricHint}>
-                {displayCount(dashboard.enrolments.reviewCount)} submitted or under review
+                {displayCount(dashboard.enrolments.reviewCount)} need review · {displayCount(dashboard.enrolments.acceptedCount)} accepted
               </p>
             </article>
 
@@ -323,7 +324,7 @@ export default async function AdminPage() {
                   <span className={styles.moduleIndex}>02 / ADMISSIONS</span>
                   <span className={styles.badge}>Foundation live</span>
                 </div>
-                <h3>Enrolments & intakes</h3>
+                <h3>Applications & intakes</h3>
                 <p>
                   Track applicants from submitted details through review,
                   acceptance or rejection, grouped by programme and intake.
@@ -410,7 +411,7 @@ export default async function AdminPage() {
               <div className={styles.cardHeader}>
                 <div>
                   <p className={styles.eyebrow}>Admissions</p>
-                  <h2>Recent enrolments</h2>
+                  <h2>Recent applications</h2>
                   <p>
                     {user.demo
                       ? "Preview examples only — no live learner data is shown."

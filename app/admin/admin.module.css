@@ -1127,3 +1127,6 @@
     padding: 0 15px;
   }
 }
+
+/* Official institute mark in the private staff navigation. */
+.sidebarLogo { display: block; width: 80px; height: 80px; object-fit: contain; background: #fff; padding: 3px; margin-bottom: 13px; border-radius: 3px; }
