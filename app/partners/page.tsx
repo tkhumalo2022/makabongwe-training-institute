@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PageHero } from "../components/page-hero";
 import { getDeliverySteps } from "../lib/cms";
 
-export const metadata: Metadata = { title: "For Partners", description: "Partner with Makabongwe on practical agricultural training, food security, youth enterprise and community development programmes." };
+export const metadata: Metadata = { alternates: { canonical: "/partners" }, title: "For Partners", description: "Partner with Makabongwe on practical agricultural training, food security, youth enterprise and community development programmes." };
 
 const clients = [
   ["Municipalities", "Local economic development, youth opportunity, food security, poverty alleviation and cooperative support."],
