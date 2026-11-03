@@ -7,7 +7,12 @@ import {
   getTrainingDays,
 } from "../lib/cms";
 
-export const metadata: Metadata = { title: "Programmes", description: "Explore Azibuye Emasisweni and Makabongwe's packaged poultry, food garden and agricultural upskilling programmes." };
+export const metadata: Metadata = {
+  title: "Agricultural Courses in Richards Bay",
+  description:
+    "Explore Makabongwe's five AgriSETA-accredited 12-month animal, plant, poultry and horticulture qualifications, plus practical agricultural workshops.",
+  alternates: { canonical: "/programmes" },
+};
 
 export default async function ProgrammesPage() {
   const [accreditedQualifications, programmes, trainingDays] =
