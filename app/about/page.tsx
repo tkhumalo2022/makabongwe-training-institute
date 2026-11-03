@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PageHero } from "../components/page-hero";
 import { getValues } from "../lib/cms";
 
-export const metadata: Metadata = { title: "About Us", description: "Meet Makabongwe Training Institute, its leadership, purpose, values and approach to agricultural development." };
+export const metadata: Metadata = { alternates: { canonical: "/about" }, title: "About Us", description: "Meet Makabongwe Training Institute, its leadership, purpose, values and approach to agricultural development." };
 
 export default async function AboutPage() {
   const values = await getValues();
