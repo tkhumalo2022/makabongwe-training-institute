@@ -5,6 +5,7 @@ import { CheckoutForm } from "./checkout-form";
 
 export const metadata: Metadata = {
   title: "Programme checkout",
+  robots: { index: false, follow: false },
   description: "Complete your Makabongwe programme enrolment and payment details.",
 };
 

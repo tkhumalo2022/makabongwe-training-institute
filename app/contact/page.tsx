@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { EnquiryForm } from "../components/enquiry-form";
 import { PageHero } from "../components/page-hero";
 
-export const metadata: Metadata = { title: "Contact", description: "Contact Makabongwe Training Institute in Richards Bay to request training, a programme proposal or a partnership discussion." };
+export const metadata: Metadata = { alternates: { canonical: "/contact" }, title: "Contact", description: "Contact Makabongwe Training Institute in Richards Bay to request training, a programme proposal or a partnership discussion." };
 
 export default function ContactPage() {
   return (

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAccreditedQualifications } from "../lib/cms";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = { alternates: { canonical: "/agriseta" },
   title: "AgriSETA Accreditation",
   description:
     "View Makabongwe Projects' AgriSETA accreditation and five accredited 12-month agricultural qualifications, valid through 30 June 2028.",

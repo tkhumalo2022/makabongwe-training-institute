@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PageHero } from "../components/page-hero";
 import { getServices } from "../lib/cms";
 
-export const metadata: Metadata = { title: "Services", description: "Explore Makabongwe's six agricultural training, enterprise and programme implementation service pillars." };
+export const metadata: Metadata = { alternates: { canonical: "/services" }, title: "Services", description: "Explore Makabongwe's six agricultural training, enterprise and programme implementation service pillars." };
 
 export default async function ServicesPage() {
   const services = await getServices();
