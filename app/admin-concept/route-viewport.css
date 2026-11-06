@@ -1,0 +1,6 @@
+/* Hide the standard marketing chrome only for this branch-only dashboard concept.
+   Both components remain intact on every public marketing route. */
+body:has(main[data-admin-concept="true"]) > .site-header,
+body:has(main[data-admin-concept="true"]) > .site-footer {
+  display: none;
+}
