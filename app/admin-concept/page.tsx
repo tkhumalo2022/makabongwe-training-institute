@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import styles from "./dashboard.module.css";
+import "./route-viewport.css";
 
 type Status = "New" | "Contacted" | "Planning" | "Confirmed";
 type View = "Overview" | "Enquiries" | "Programmes";
@@ -65,7 +66,7 @@ export default function AdminConceptPage() {
   };
 
   return (
-    <main className={styles.workspace}>
+    <main className={styles.workspace} data-admin-concept="true">
       <aside className={styles.sidebar} aria-label="Concept navigation">
         <div className={styles.wordmark}><span className={styles.brandMark}>M</span><span>MAKABONGWE<small>TRAINING INSTITUTE</small></span></div>
         <p className={styles.railLabel}>OPERATIONS</p>
