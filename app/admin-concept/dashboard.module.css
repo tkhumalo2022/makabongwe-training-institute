@@ -123,3 +123,12 @@
   .footer { flex-direction: column; }
 }
 @media (prefers-reduced-motion: reduce) { .workspace *, .workspace *::before, .workspace *::after { scroll-behavior: auto !important; transition: none !important; } }
+
+/* Institute's existing agriculture/training identity, not an invented initials badge. */
+.brandMark{background:#f9f8f0;width:53px;height:53px;border:1px solid #93b083;overflow:hidden;border-radius:7px;padding:2px;flex:0 0 auto}
+.brandMark img{display:block;width:100%;height:100%;object-fit:contain}
+.headerBrand{display:flex;align-items:center;gap:13px;margin:0 0 22px;min-width:0}
+.headerBrand img{width:70px;height:70px;object-fit:contain;flex:0 0 auto;padding:4px;background:white;border:1px solid #d5decb;border-radius:10px}
+.headerBrand>span{color:#264b35;font-size:12px;line-height:1.45;letter-spacing:.1em;font-weight:900}
+.headerBrand small{display:block;color:#778d70;font-size:9px;letter-spacing:.13em;margin-top:5px}
+@media(max-width:640px){.brandMark{width:46px;height:46px}.headerBrand img{width:57px;height:57px}.headerBrand>span{font-size:10px}.headerBrand small{font-size:8px}}
