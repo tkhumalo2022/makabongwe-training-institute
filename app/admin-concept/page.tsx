@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import styles from "./dashboard.module.css";
 import "./route-viewport.css";
 
@@ -68,7 +69,7 @@ export default function AdminConceptPage() {
   return (
     <main className={styles.workspace} data-admin-concept="true">
       <aside className={styles.sidebar} aria-label="Concept navigation">
-        <div className={styles.wordmark}><span className={styles.brandMark}>M</span><span>MAKABONGWE<small>TRAINING INSTITUTE</small></span></div>
+        <div className={styles.wordmark}><span className={styles.brandMark}><Image src="/images/makabongwe-logo.webp" alt="" width={49} height={49} unoptimized /></span><span>MAKABONGWE<small>TRAINING INSTITUTE</small></span></div>
         <p className={styles.railLabel}>OPERATIONS</p>
         <nav className={styles.railNav} aria-label="Dashboard views">
           {views.map((item, index) => (
@@ -85,6 +86,7 @@ export default function AdminConceptPage() {
       <div className={styles.mainContent}>
         <header className={styles.header}>
           <div>
+            <div className={styles.headerBrand}><Image src="/images/makabongwe-logo.webp" alt="Makabongwe Training Institute brand artwork" width={70} height={70} unoptimized /><span>MAKABONGWE TRAINING INSTITUTE<small>AGRICULTURAL SKILLS · OPERATIONS CONCEPT</small></span></div>
             <p className={styles.eyebrow}>INSTITUTE OPERATIONS / DESIGN CONCEPT</p>
             <h1>Training, clearly managed<span>.</span></h1>
             <p className={styles.subtitle}>An intelligent home for enquiries, programmes and delivery planning.</p>
