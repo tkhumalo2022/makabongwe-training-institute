@@ -1,176 +1,42 @@
-.page {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 48px 20px;
-  background: #073d2a;
-}
-
-.card {
-  width: min(100%, 480px);
-  padding: clamp(28px, 6vw, 52px);
-  background: #fbfaf5;
-  color: #101612;
-  border-top: 8px solid #f0b323;
-  box-shadow: 0 28px 70px rgba(0, 0, 0, .26);
-}
-
-.brandMark {
-  width: 58px;
-  height: 58px;
-  display: grid;
-  place-items: center;
-  background: #073d2a;
-  color: #b8df35;
-  font-weight: 900;
-  letter-spacing: .08em;
-}
-
-.eyebrow {
-  margin: 26px 0 12px;
-  color: #073d2a;
-  font-size: 14px;
-  font-weight: 850;
-  letter-spacing: .13em;
-  text-transform: uppercase;
-}
-
-.card h1 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(32px, 7vw, 46px);
-  line-height: 1.12;
-  letter-spacing: -.04em;
-  text-transform: uppercase;
-}
-
-.intro {
-  margin: 18px 0 28px;
-  color: #68716a;
-  line-height: 1.65;
-}
-
-.form {
-  display: grid;
-  gap: 17px;
-}
-
-.form label {
-  display: grid;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: 750;
-}
-
-.form input {
-  width: 100%;
-  min-height: 52px;
-  padding: 12px 14px;
-  border: 1px solid #c8cec6;
-  border-radius: 0;
-  background: white;
-  color: #101612;
-  font-size: 16px;
-}
-
-.passwordField { display: grid; gap: 8px; }
-.passwordControl { display: flex; border: 1px solid #c8cec6; background: white; }
-.passwordControl input { min-width: 0; border: 0; }
-.passwordToggle { flex-shrink: 0; min-height: 48px; max-width: 110px; padding: 8px 12px; border: 0; background: #edf5e9; color: #073d2a; font-size: 14px; font-weight: 750; }
-.passwordToggle:focus-visible { outline: 3px solid #073d2a; outline-offset: 3px; }
-
-.form input:focus-visible,
-.primary:focus-visible,
-.secondary:focus-visible,
-.textButton:focus-visible {
-  outline: 3px solid #b8df35;
-  outline-offset: 3px;
-}
-
-.primary,
-.secondary {
-  min-height: 52px;
-  border: 1px solid #073d2a;
-  padding: 0 18px;
-  font-weight: 800;
-}
-
-.primary {
-  background: #073d2a;
-  color: white;
-}
-
-.primary:hover:not(:disabled) {
-  background: #0b5137;
-}
-
-.secondary {
-  background: transparent;
-  color: #073d2a;
-}
-
-.secondary:hover:not(:disabled) {
-  background: #edf5e9;
-}
-
-.primary:disabled,
-.secondary:disabled,
-.textButton:disabled {
-  cursor: not-allowed;
-  opacity: .58;
-}
-
-.textButton {
-  min-height: 44px;
-  justify-self: center;
-  border: 0;
-  background: transparent;
-  color: #073d2a;
-  font-weight: 750;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #68716a;
-  font-size: 14px;
-}
-
-.divider::before,
-.divider::after {
-  content: "";
-  height: 1px;
-  flex: 1;
-  background: #d7dbd4;
-}
-
-.message,
-.configWarning {
-  margin: 0;
-  padding: 13px 14px;
-  border-left: 4px solid #f0b323;
-  background: #f4f0e5;
-  color: #344139;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.configWarning {
-  border-left-color: #a1261e;
-}
-
-.securityNote {
-  margin: 26px 0 0;
-  padding-top: 20px;
-  border-top: 1px solid #d7dbd4;
-  color: #68716a;
-  font-size: 14px;
-  line-height: 1.55;
-}
-
+/* Design reference: Charles Liu / charles-unslop, baf4272. See docs/login-design-review.md. */
+.page { position:relative; isolation:isolate; min-height:100svh; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:center; gap:64px; padding:88px clamp(24px,6vw,112px) 40px; background:#1c392b; color:#17251e; }
+.landscape { z-index:-3; object-fit:cover; object-position:58% center; }
+.shade { position:absolute; inset:0; z-index:-2; background:rgba(8,29,18,.25); }
+.card { width:min(100%,432px); padding:36px; background:#fffefa; border-radius:8px; box-shadow:0 12px 48px rgba(9,25,15,.14); }
+.brand { display:flex; align-items:center; gap:12px; width:fit-content; margin:0 0 32px; text-decoration:none; color:#183c2c; font-size:18px; font-weight:600; line-height:1.2; }
+.brand img { width:56px; height:56px; object-fit:contain; }
+.brand small { display:block; margin-top:4px; font-size:12px; font-weight:400; color:#566258; }
+.card h1 { margin:0; font-family:var(--font-geist-sans),sans-serif; font-size:32px; line-height:1.15; letter-spacing:-.035em; font-weight:500; text-transform:none; }
+.intro { margin:12px 0 28px; color:#566258; font-size:14px; line-height:1.6; }
+.form { display:grid; gap:20px; }
+.form label { display:grid; gap:8px; color:#26372c; font-size:14px; font-weight:500; }
+.form input { width:100%; min-height:48px; padding:12px; border:1px solid #cbd2c9; border-radius:4px; background:#fff; color:#17251e; font:inherit; font-size:16px; transition:border-color 160ms,box-shadow 160ms; }
+.form input:focus { outline:2px solid #28573d; outline-offset:2px; }
+.passwordField { display:grid; gap:8px; }
+.passwordField>label { font-size:14px; }
+.passwordControl { display:flex; align-items:center; border:1px solid #cbd2c9; border-radius:4px; background:#fff; }
+.passwordControl input { min-width:0; border:0; }
+.passwordControl:focus-within { outline:2px solid #28573d; outline-offset:2px; }
+.passwordControl input:focus { outline:none; }
+.passwordToggle { flex-shrink:0; min-width:56px; min-height:48px; border:0; padding:8px 12px; color:#28573d; background:transparent; font:inherit; font-size:13px; cursor:pointer; }
+.primary,.secondary { min-height:48px; border:0; border-radius:4px; padding:12px 16px; font:inherit; font-size:14px; font-weight:500; cursor:pointer; transition:background-color 160ms,color 160ms; }
+.primary { background:#174d32; color:#fff; }
+.primary:hover:not(:disabled) { background:#103b26; }
+.secondary { background:#edf1e9; color:#17432e; }
+.secondary:hover:not(:disabled) { background:#e1e8da; }
+.textButton { justify-self:center; min-height:44px; padding:8px; border:0; background:transparent; color:#305740; font:inherit; font-size:13px; text-decoration:underline; text-underline-offset:4px; cursor:pointer; }
+.primary:disabled,.secondary:disabled,.textButton:disabled { cursor:not-allowed; opacity:.6; }
+.page :is(a,button):focus-visible { outline:3px solid #b78220; outline-offset:4px; }
+.message,.configWarning { margin:0; padding:12px; border-radius:4px; background:#f4f0e4; color:#493d25; font-size:13px; line-height:1.5; }
+.configWarning { background:#f8eee8; color:#75402a; }
+.securityNote { margin:20px 0 0; color:#59665d; font-size:12px; line-height:1.55; }
+.divider { color:#59665d; font-size:12px; text-align:center; }
+.backLink { position:absolute; top:28px; right:clamp(24px,6vw,112px); display:flex; align-items:center; gap:24px; min-height:44px; padding:0 16px; background:#fffefa; color:#26372c; border-radius:4px; font-size:13px; text-decoration:none; }
+.fieldNote { align-self:end; justify-self:end; max-width:400px; margin:0 0 32px; padding:28px; background:#183c2c; color:#fff; }
+.fieldNote p { margin:0 0 12px; font-size:24px; font-weight:400; line-height:1.2; letter-spacing:-.025em; }
+.fieldNote span { font-size:13px; color:#dbe4d8; }
+.brandMark { width:48px; height:48px; display:grid; place-items:center; background:#174d32; color:#fff; font-weight:500; }
+.eyebrow { font-size:13px; color:#305740; margin:20px 0 12px; }
 .adminPage {
   min-height: calc(100vh - 88px);
   padding: 70px 20px;
@@ -255,25 +121,7 @@
   color: white;
 }
 
-@media (max-width: 540px) {
-  .page {
-    padding: 20px 14px;
-  }
 
-  .card {
-    padding: 28px 22px;
-  }
-
-  .adminActions {
-    display: grid;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .primary,
-  .secondary,
-  .textButton {
-    scroll-behavior: auto;
-    transition: none;
-  }
-}
+@media(max-width:900px) { .page { gap:32px; padding:88px 32px 40px; grid-template-columns:minmax(0,1fr) minmax(0,.7fr); }.card { padding:28px; }.fieldNote { padding:24px; }.fieldNote p { font-size:28px; } }
+@media(max-width:680px) { .page { display:flex; flex-direction:column; align-items:stretch; padding:204px 20px 24px; gap:24px; }.landscape { height:300px!important; object-position:center 44%; }.shade { height:300px; }.card { width:100%; max-width:440px; margin:0 auto; padding:28px 24px; }.backLink { top:20px; right:20px; }.fieldNote { align-self:stretch; max-width:440px; width:100%; margin:0 auto; background:#183c2c; padding:20px 24px; }.fieldNote p { font-size:24px; margin-bottom:12px; }.brand { margin-bottom:24px; }.adminActions { display:grid; } }
+@media(prefers-reduced-motion:reduce) { .page * { transition:none; scroll-behavior:auto; } }

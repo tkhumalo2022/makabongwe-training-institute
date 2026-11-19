@@ -200,8 +200,8 @@ export default function LoginForm({
             maxLength={256}
             required
           />
-          <button type="button" className={styles.passwordToggle} aria-controls="admin-password" aria-pressed={showPassword} onClick={() => setShowPassword(value => !value)}>
-            {showPassword ? "Hide password" : "Show password"}
+          <button type="button" className={styles.passwordToggle} aria-label={showPassword ? "Hide password" : "Show password"} aria-controls="admin-password" aria-pressed={showPassword} onClick={() => setShowPassword(value => !value)}>
+            {showPassword ? "Hide" : "Show"}
           </button>
           </div>
         </div>
@@ -230,17 +230,13 @@ export default function LoginForm({
           {busy === "login" ? "Signing in…" : "Sign in"}
         </button>
 
-        <div className={styles.divider} aria-hidden="true">
-          <span>or</span>
-        </div>
-
-        <button
+<button
           className={styles.secondary}
           type="button"
           disabled={busy !== null || !siteKey}
           onClick={() => requestLink("magic")}
         >
-          {busy === "magic" ? "Sending secure link…" : "Email me a secure sign-in link"}
+          {busy === "magic" ? "Sending secure link…" : "Email me a sign-in link"}
         </button>
 
         <button
