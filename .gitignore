@@ -42,3 +42,6 @@ next-env.d.ts
 /.sites-runtime/
 /outputs/
 /work/
+
+# Local-only Makabongwe admin drafts
+/.admin-local/

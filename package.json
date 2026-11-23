@@ -15,7 +15,8 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "typecheck": "tsc --noEmit",
     "payments:check": "node scripts/check-payment-readiness.mjs",
-    "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate"
+    "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate",
+    "dev:admin": "next dev -H 127.0.0.1 -p 4174"
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",

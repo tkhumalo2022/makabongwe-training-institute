@@ -94,7 +94,13 @@ export function getServices() {
   );
 }
 
-export function getProgrammes() {
+export async function getProgrammes() {
+  // Make local draft edits visible on localhost; production never reads draft files.
+  if (process.env.NODE_ENV !== "production" && process.env.MAKABONGWE_ADMIN_MODE !== "supabase") {
+    const { publishedPreviewProgrammes } = await import("./admin-programmes");
+    const draft = await publishedPreviewProgrammes();
+    if (draft) return draft;
+  }
   return loadCms<PairRow, CmsPair[]>(
     "cms_programmes",
     "title,description",
