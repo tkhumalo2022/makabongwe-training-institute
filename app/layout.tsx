@@ -3,8 +3,7 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import "./mobile.css";
 import "./mobile-header-fix.css";
-import { SiteFooter } from "./components/site-footer";
-import { SiteHeader } from "./components/site-header";
+import { SiteChrome } from "./components/site-chrome";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -65,9 +64,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} antialiased`}>
-        <SiteHeader />
+        <SiteChrome placement="header" />
         {children}
-        <SiteFooter />
+        <SiteChrome placement="footer" />
       </body>
     </html>
   );

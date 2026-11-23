@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { AdminGreeting } from "./admin-greeting";
 
 type Programme = {
   id: number; slug: string; title: string; description: string;
@@ -47,17 +49,19 @@ export default function AdminClient() {
   const [password, setPassword] = useState("");
   const [active, setActive] = useState<Tab>("overview");
   const [data, setData] = useState<Data | null>(null);
+  const [lastChecked, setLastChecked] = useState<Date | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [filter, setFilter] = useState("");
   const [working, setWorking] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  async function reload() {
+  const reload = useCallback(async () => {
     const latest = await parse(await fetch("/api/admin/programmes", {cache:"no-store", credentials:"same-origin"})) as Data;
     setData(latest);
+    setLastChecked(new Date());
     return latest;
-  }
+  }, []);
   useEffect(() => {
     let live = true;
     (async () => {
@@ -69,7 +73,7 @@ export default function AdminClient() {
         setConfigured(status.configured === true);
         if (status.authenticated) {
           const next = await parse(await fetch("/api/admin/programmes", {cache:"no-store", credentials:"same-origin"}));
-          if (live) setData(next);
+          if (live) { setData(next); setLastChecked(new Date()); }
         }
       } catch {
         if (live) setError("Cannot connect to the local admin server.");
@@ -77,6 +81,22 @@ export default function AdminClient() {
     })();
     return () => {live = false;};
   }, []);
+  // Refresh actual programme totals while the admin page is visible.
+  useEffect(() => {
+    if (!authenticated) return;
+    const refresh = () => {
+      if (document.visibilityState !== "visible") return;
+      void reload().catch(() => setError("Programme data could not be refreshed."));
+    };
+    const timer = window.setInterval(refresh, 60_000);
+    document.addEventListener("visibilitychange", refresh);
+    window.addEventListener("focus", refresh);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", refresh);
+      window.removeEventListener("focus", refresh);
+    };
+  }, [authenticated, reload]);
   async function login(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); setWorking(true); setError("");
     try {
@@ -125,7 +145,7 @@ export default function AdminClient() {
       {checking ? <div className="mk-auth-wrap"><div className="mk-auth-card">Connecting to Makabongwe administration…</div></div> :
         !authenticated ? (
           <div className="mk-auth-wrap">
-            <div className="mk-auth-intro"><div className="mk-mark">M<span>.</span></div><p className="mk-eyebrow">PRIVATE WORKSPACE · MAKABONGWE</p><h1>Your training operations, <em>in one place.</em></h1><p>Prepare programmes, confirm intakes, manage publication and keep your enrolment pathway organised.</p></div>
+            <div className="mk-auth-intro"><div className="mk-mark"><Image src="/images/makabongwe-logo.webp" alt="Makabongwe Training Institute logo" width={48} height={48} /></div><p className="mk-eyebrow">PRIVATE WORKSPACE · MAKABONGWE</p><h1>Your training operations, <em>in one place.</em></h1><p>Prepare programmes, confirm intakes, manage publication and keep your enrolment pathway organised.</p></div>
             <form className="mk-auth-card" onSubmit={login}>
               <p className="mk-eyebrow">ADMINISTRATION ACCESS</p><h2>Welcome back.</h2>
               <label htmlFor="admin-secret">Administrator password</label>
@@ -140,7 +160,7 @@ export default function AdminClient() {
         ) : (
           <div className="mk-shell">
             <aside className="mk-sidebar">
-              <div className="mk-brand"><div className="mk-mark">M<span>.</span></div><div><strong>Makabongwe</strong><small>ADMINISTRATION</small></div></div>
+              <div className="mk-brand"><div className="mk-mark"><Image src="/images/makabongwe-logo.webp" alt="Makabongwe Training Institute logo" width={48} height={48} /></div><div><strong>Makabongwe</strong><small>ADMINISTRATION</small></div></div>
               <div className="mk-nav-label">WORKSPACE</div>
               <nav className="mk-nav" aria-label="Admin sections">
                 {tabs.map(tab=><button key={tab.id} type="button" className={active===tab.id?"is-active":""} onClick={()=>{setActive(tab.id);setError("");setMessage("");}}>
@@ -150,12 +170,12 @@ export default function AdminClient() {
               <div className="mk-sidebar-bottom"><p>Training institute<br/>Richards Bay, KZN</p><Link href="/programmes">Public programmes ↗</Link><button type="button" onClick={logout}>Sign out</button></div>
             </aside>
             <div className="mk-main">
-              <header className="mk-header"><div><p className="mk-eyebrow">OPERATIONS / {active.toUpperCase()}</p><p className="mk-date">Makabongwe Projects (Pty) Ltd</p></div><div className="mk-header-status"><span className="mk-dot"/>{data?.mode==="local-preview"?"Local draft mode":"Supabase connected"}</div></header>
+              <header className="mk-header"><div><p className="mk-eyebrow">OPERATIONS / {active.toUpperCase()}</p><p className="mk-date">Makabongwe Projects (Pty) Ltd</p></div><div className="mk-header-status"><span className="mk-dot"/><span>{data?.mode==="local-preview"?"Local draft mode":"Supabase connected"}</span><span className="mk-last-sync">{lastChecked ? "Updated " + lastChecked.toLocaleTimeString("en-ZA", {timeZone:"Africa/Johannesburg",hour:"2-digit",minute:"2-digit",hour12:false}) + " SAST" : "Awaiting refresh"}</span><button type="button" className="mk-header-refresh" onClick={() => void reload().catch(() => setError("Programme data could not be refreshed."))}>Refresh</button></div></header>
               {data?.mode==="local-preview" && <div className="mk-preview-note" role="note"><strong>LOCAL PREVIEW.</strong> Changes are saved on this laptop and appear on the localhost programmes page. Nothing changes on the live website or payment system.</div>}
               {error && <div className="mk-alert" role="alert">{error}</div>}
               {message && <div className="mk-success" role="status">{message}</div>}
               {active==="overview" && <section className="mk-section">
-                <div className="mk-headline"><p className="mk-eyebrow">YOUR WORKSPACE</p><h1>Good morning, <em>let’s get organised.</em></h1><p>Everything that matters as Makabongwe prepares its next programmes.</p></div>
+                <div className="mk-headline mk-greeting-headline"><AdminGreeting /></div>
                 <div className="mk-metrics">
                   <article><span>01 / PROGRAMMES</span><strong>{data?.programmes.length||0}</strong><p>On the programme register</p></article>
                   <article><span>02 / PUBLISHED</span><strong>{published}</strong><p>Visible on the website</p></article>
