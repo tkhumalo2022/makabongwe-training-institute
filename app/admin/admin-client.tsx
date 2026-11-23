@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { AdminGreeting } from "./admin-greeting";
+import AdminOverview from "./admin-overview";
+import InstitutePanel from "./institute-panel";
 
 type Programme = {
   id: number; slug: string; title: string; description: string;
@@ -20,13 +21,16 @@ type Data = {
 type Draft = Omit<Programme, "id" | "price_cents" | "registration_fee_cents"> & {
   id?: number; price_rands: number; registration_fee_rands: number;
 };
-type Tab = "overview" | "programmes" | "enrolments" | "enquiries" | "settings";
+type Tab = "overview" | "programmes" | "students" | "course-spaces" | "communications" | "enrolments" | "enquiries" | "settings";
 const tabs: {id: Tab; title: string; short: string}[] = [
   {id: "overview", title: "Overview", short: "01"},
   {id: "programmes", title: "Programmes", short: "02"},
-  {id: "enrolments", title: "Enrolments", short: "03"},
-  {id: "enquiries", title: "Enquiries", short: "04"},
-  {id: "settings", title: "Settings", short: "05"},
+  {id: "students", title: "Students", short: "03"},
+  {id: "course-spaces", title: "Course spaces", short: "04"},
+  {id: "communications", title: "Emails", short: "05"},
+  {id: "enrolments", title: "Enrolments", short: "06"},
+  {id: "enquiries", title: "Enquiries", short: "07"},
+  {id: "settings", title: "Settings", short: "08"},
 ];
 const blank: Draft = {
   slug: "", title: "", description: "", department: "Agricultural Training",
@@ -167,33 +171,14 @@ export default function AdminClient() {
                   <span className="mk-nav-number">{tab.short}</span>{tab.title}<span className="mk-arrow" aria-hidden="true">↗</span>
                 </button>)}
               </nav>
-              <div className="mk-sidebar-bottom"><p>Training institute<br/>Richards Bay, KZN</p><Link href="/programmes">Public programmes ↗</Link><button type="button" onClick={logout}>Sign out</button></div>
+              <div className="mk-sidebar-bottom"><p>Training institute<br/>Richards Bay, KZN</p><Link href="/programmes">Public programmes ↗</Link><Link href="/learn">Student portal ↗</Link><button type="button" onClick={logout}>Sign out</button></div>
             </aside>
             <div className="mk-main">
               <header className="mk-header"><div><p className="mk-eyebrow">OPERATIONS / {active.toUpperCase()}</p><p className="mk-date">Makabongwe Projects (Pty) Ltd</p></div><div className="mk-header-status"><span className="mk-dot"/><span>{data?.mode==="local-preview"?"Local draft mode":"Supabase connected"}</span><span className="mk-last-sync">{lastChecked ? "Updated " + lastChecked.toLocaleTimeString("en-ZA", {timeZone:"Africa/Johannesburg",hour:"2-digit",minute:"2-digit",hour12:false}) + " SAST" : "Awaiting refresh"}</span><button type="button" className="mk-header-refresh" onClick={() => void reload().catch(() => setError("Programme data could not be refreshed."))}>Refresh</button></div></header>
               {data?.mode==="local-preview" && <div className="mk-preview-note" role="note"><strong>LOCAL PREVIEW.</strong> Changes are saved on this laptop and appear on the localhost programmes page. Nothing changes on the live website or payment system.</div>}
               {error && <div className="mk-alert" role="alert">{error}</div>}
               {message && <div className="mk-success" role="status">{message}</div>}
-              {active==="overview" && <section className="mk-section">
-                <div className="mk-headline mk-greeting-headline"><AdminGreeting /></div>
-                <div className="mk-metrics">
-                  <article><span>01 / PROGRAMMES</span><strong>{data?.programmes.length||0}</strong><p>On the programme register</p></article>
-                  <article><span>02 / PUBLISHED</span><strong>{published}</strong><p>Visible on the website</p></article>
-                  <article><span>03 / OPEN FOR ENROLMENT</span><strong>{intakeOpen}</strong><p>Available for applications</p></article>
-                  <article><span>04 / ENROLMENTS</span><strong>{data?.enrolmentCount ?? "—"}</strong><p>{data?.mode==="supabase"?"Private learner records":"Connect Supabase to view"}</p></article>
-                </div>
-                <div className="mk-grid">
-                  <div className="mk-panel"><div className="mk-panel-heading"><div><span>QUICK ACTIONS</span><h2>What needs attention?</h2></div></div><div className="mk-action-list">
-                    <button type="button" onClick={startNew}>Create a new programme <span>↗</span></button>
-                    <button type="button" onClick={()=>setActive("programmes")}>Review programmes and dates <span>↗</span></button>
-                    <button type="button" onClick={()=>setActive("enrolments")}>Check enrolment readiness <span>↗</span></button>
-                  </div></div>
-                  <div className="mk-panel mk-panel-dark"><span>FROM DRAFT TO DELIVERY</span><h2>Prepare your next intake with confidence.</h2><p>Set the training location, duration, cost and intake details. Keep enrolment disabled until pricing and operations are confirmed.</p><button type="button" onClick={startNew}>Add programme <span>↗</span></button></div>
-                </div>
-                <div className="mk-panel mk-recent"><div className="mk-panel-heading"><div><span>PROGRAMME REGISTER</span><h2>Current programmes</h2></div><button type="button" onClick={()=>setActive("programmes")}>Manage all ↗</button></div>
-                {(data?.programmes||[]).slice(0,5).map(p=><button className="mk-programme-row" type="button" onClick={()=>edit(p)} key={p.id}><span>{String(p.sort_order+1).padStart(2,"0")}</span><strong>{p.title}</strong><small>{p.is_published?"Published":"Draft"}</small><span aria-hidden="true">↗</span></button>)}
-                </div>
-              </section>}
+              {active==="overview" && <AdminOverview data={data} onNew={startNew} onEdit={edit} onNavigate={setActive} />}
               {active==="programmes" && <section className="mk-section">
                 <div className="mk-headline mk-headline-row"><div><p className="mk-eyebrow">PROGRAMME MANAGEMENT</p><h1>Programmes <em>& intakes.</em></h1><p>Create, edit, publish and manage your training catalogue.</p></div><button className="mk-primary" type="button" onClick={startNew}>+ Add programme</button></div>
                 <div className="mk-editor-layout">
@@ -229,6 +214,7 @@ export default function AdminClient() {
               </section>}
               {active==="enrolments" && <section className="mk-section"><div className="mk-headline"><p className="mk-eyebrow">LEARNER ADMINISTRATION</p><h1>Enrolments <em>& registers.</em></h1><p>Safeguard private learner records and prepare for the next cohort.</p></div><div className="mk-metrics"><article><span>RECORDED ENROLMENTS</span><strong>{data?.enrolmentCount??"—"}</strong><p>{data?.mode==="supabase"?"Live database count":"Requires Supabase connection"}</p></article><article><span>OPEN PROGRAMMES</span><strong>{intakeOpen}</strong><p>Configured for enrolment</p></article></div><div className="mk-panel mk-inform"><span>PRIVACY FIRST</span><h2>Learner data stays protected.</h2><p>Existing enrolments and course registers are stored in Supabase. This preview exposes aggregate counts only; private identification, payment details and student records are not copied to local draft files.</p><button type="button" onClick={()=>setActive("programmes")}>Review programme readiness ↗</button></div></section>}
               {active==="enquiries" && <section className="mk-section"><div className="mk-headline"><p className="mk-eyebrow">ENQUIRY TRACKING</p><h1>Incoming <em>opportunities.</em></h1><p>Track programme interest before committing to delivery dates.</p></div><div className="mk-metrics"><article><span>ENQUIRIES RECEIVED</span><strong>{data?.enquiryCount??"—"}</strong><p>{data?.mode==="supabase"?"Live database count":"Requires Supabase connection"}</p></article><article><span>PAYMENT RECORDS</span><strong>{data?.paymentCount??"—"}</strong><p>{data?.mode==="supabase"?"Live database count":"Requires Supabase connection"}</p></article></div><div className="mk-panel mk-inform"><span>SERVER-SIDE RECORDS</span><h2>No sensitive details in the browser until roles are set up.</h2><p>The website&apos;s existing enquiry and payment endpoints remain unchanged. Review individual records using authorised Supabase access, not a public API.</p><Link href="/contact">View public enquiry form ↗</Link></div></section>}
+              {(active==="students" || active==="course-spaces" || active==="communications") && <InstitutePanel view={active} />}
               {active==="settings" && <section className="mk-section"><div className="mk-headline"><p className="mk-eyebrow">ADMINISTRATION SETTINGS</p><h1>System <em>readiness.</em></h1></div><div className="mk-panel mk-settings"><h2>Current connection</h2><dl><div><dt>Environment</dt><dd>{data?.mode==="local-preview"?"Local draft / preview":"Supabase server connection"}</dd></div><div><dt>Administrator authentication</dt><dd>Protected session · HttpOnly cookie</dd></div><div><dt>Publishing</dt><dd>{data?.mode==="local-preview"?"Localhost only":"Supabase CMS"}</dd></div><div><dt>Payment settings</dt><dd>Existing payment routes unchanged</dd></div></dl><p>Live publishing needs the Supabase server configuration and an explicitly enabled admin mode. The repository contains no production keys.</p><button className="mk-secondary" type="button" onClick={logout}>Sign out safely</button></div></section>}
               <footer className="mk-footer">MAKABONGWE PROJECTS <span>Internal operations dashboard · {new Date().getFullYear()}</span></footer>
             </div>
