@@ -1,0 +1,135 @@
+/* Makabongwe Student Intranet · collegiate navigation, not a public landing page. */
+.mti-learner{
+ --forest:#1F5742;--ink:#1C3026;--paper:#F1F5F2;
+ --line:#CDDAD0;--muted:#52685C;--brass:#A78353;
+ font-family:"Segoe UI",Tahoma,Arial,sans-serif;
+ background:var(--paper);color:var(--ink);
+}
+.mti-student-header{
+ background:#FFFFFF;border-bottom:1px solid #C9D8CE;
+ height:77px;padding:12px clamp(17px,3vw,56px);
+}
+.mti-student-brand strong{font:700 17px/1.2 "Segoe UI",Tahoma,Arial,sans-serif;letter-spacing:-.03em}
+.mti-student-brand small{font-size:11px;letter-spacing:.035em;color:#597264;text-transform:none}
+.mti-student-brand>span:first-child{border-radius:4px}
+.mti-student-header-actions{font-size:12px}
+.mti-student-header-actions a,.mti-student-header-actions button{
+ border:1px solid #BFD0C3;border-radius:4px;color:#225B41;background:#FFFFFF;
+}
+.mti-student-panel{
+ background:#FFFFFF;border:1px solid #CDDDD1;border-radius:5px;
+ box-shadow:0 2px 8px rgba(21,53,36,.025);padding:clamp(20px,3vw,39px);
+}
+.mti-student-panel h2,.mti-student-course>h3,.mti-course-tile h3{
+ font-family:"Segoe UI",Tahoma,Arial,sans-serif;
+ font-weight:650;letter-spacing:-.045em;
+}
+.mti-student-intro h1{
+ font-family:"Segoe UI",Tahoma,Arial,sans-serif;
+ font-weight:700;letter-spacing:-.055em;
+}
+.mti-student-intro h1 em{font-weight:700;font-style:normal}
+.mti-student-kicker{text-transform:none;font-size:12px;letter-spacing:.04em;color:#3B6850}
+.mti-student-form label{font-size:13px}
+.mti-student-form input{font-size:16px;min-height:46px;border-radius:4px}
+.mti-student-primary{background:#235A43;border-radius:4px}
+.mti-student-primary:hover{background:#173D2D}
+.mti-student-welcome h2{font-size:clamp(23px,2.7vw,34px)}
+.mti-student-welcome>p:last-child{font-size:13px}
+.mti-student-course-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.mti-course-tile{
+ align-items:flex-start;background:#F8FAF7;padding:22px 21px;min-height:146px;
+ border-radius:5px;border-color:#CDDBCD;gap:11px;
+}
+.mti-course-tile:hover{border-color:#779B80;background:#EDF4EA}
+.mti-course-tile h3{font-size:20px;margin:0 0 8px}
+.mti-course-tile p{font-size:13px}
+.mti-course-tile>span{font-variant-numeric:tabular-nums;font-size:11px}
+.mti-student-block{padding-top:25px;margin-top:34px}
+.mti-student-block h4{font-size:18px;margin-bottom:13px}
+.mti-student-block article{padding:18px 0}
+.mti-student-block article strong{font-size:15px}
+.mti-student-block article p{font-size:13px}
+.mti-student-breadcrumb{
+ font-size:13px;letter-spacing:0;text-transform:none;
+ color:#426F54;
+}
+.mti-has-session .mti-student-wrap{
+ max-width:1580px;width:100%;display:grid;
+ grid-template-columns:248px minmax(0,1fr);gap:clamp(22px,2.5vw,36px);
+ align-items:start;margin:0 auto;
+ padding:30px clamp(16px,3vw,56px) 70px;
+}
+.mti-has-session .mti-student-intro{
+ position:sticky;top:20px;padding:22px 16px 25px;
+ background:#FFFFFF;border:1px solid #CDDDD0;border-radius:5px;
+ min-width:0;
+}
+.mti-has-session .mti-student-intro .mti-student-kicker{
+ font-size:11px;margin:0 0 10px;color:#4B6654;
+}
+.mti-has-session .mti-student-intro h1{
+ font-size:23px;line-height:1.17;margin:0 0 12px;
+}
+.mti-has-session .mti-student-intro>p:nth-of-type(2){
+ font-size:12px;line-height:1.6;margin:0 0 19px;color:#5C7162;
+}
+.mti-has-session .mti-student-rule,
+.mti-has-session .mti-student-inform{display:none}
+.mti-student-nav{display:flex;flex-direction:column;gap:5px;margin-top:18px}
+.mti-student-nav-label{
+ margin:13px 7px 5px;color:#6D8375;
+ font-weight:700;font-size:11px;letter-spacing:.04em;
+}
+.mti-student-nav a{
+ text-decoration:none;display:flex;align-items:center;min-height:43px;
+ padding:10px 12px;border-radius:4px;
+ font-size:13px;font-weight:550;color:#405D49;
+ border-left:3px solid transparent;
+ overflow-wrap:anywhere;
+}
+.mti-student-nav a:hover{background:#ECF3EC;color:#1B5039}
+.mti-student-nav a[aria-current="page"]{
+ background:#E5F1E6;border-left-color:#357A52;color:#194A34;font-weight:700;
+}
+.mti-student-account{margin-top:20px;padding:15px 9px 0;border-top:1px solid #D6E2D8}
+.mti-student-account span{display:block;color:#637D68;font-size:11px;font-weight:650}
+.mti-student-account strong{font:650 12px/1.4 "Segoe UI",Tahoma,Arial,sans-serif;overflow-wrap:anywhere}
+.mti-has-session .mti-student-panel{min-height:calc(80vh - 100px)}
+.mti-student-footer{
+ background:#E8EFEB;border-top-color:#CAD8D0;
+ font-size:11px;letter-spacing:.015em;
+}
+.mti-learner :is(a,button,input):focus-visible{
+ outline:3px solid #B88A53!important;outline-offset:3px!important;
+}
+@media(max-width:960px){
+ .mti-has-session .mti-student-wrap{
+   grid-template-columns:1fr;gap:15px;
+   padding:18px 16px 50px;
+ }
+ .mti-has-session .mti-student-intro{position:static;padding:17px}
+ .mti-has-session .mti-student-intro h1{margin-bottom:0;font-size:22px}
+ .mti-has-session .mti-student-intro>p:nth-of-type(2){display:none}
+ .mti-student-nav{
+   flex-direction:row;overflow:auto;white-space:nowrap;
+   gap:6px;margin-top:12px;padding-bottom:6px;
+ }
+ .mti-student-nav a{flex:0 0 auto;max-width:240px}
+ .mti-student-nav-label,.mti-student-account{display:none}
+}
+@media(max-width:660px){
+ .mti-student-course-list{grid-template-columns:1fr}
+ .mti-student-header{height:auto;min-height:68px;padding:10px 14px}
+ .mti-student-brand strong{font-size:15px}
+ .mti-student-brand small{font-size:10px}
+ .mti-student-wrap{padding:23px 16px}
+ .mti-student-intro h1{font-size:32px}
+ .mti-has-session .mti-student-wrap{padding:14px 12px 40px}
+ .mti-has-session .mti-student-panel{padding:18px;min-height:0}
+ .mti-course-tile{min-height:108px;padding:17px}
+ .mti-student-footer{padding:16px 14px}
+}
+@media(prefers-reduced-motion:reduce){
+ .mti-learner *{transition-duration:.01ms!important;animation-duration:.01ms!important}
+}

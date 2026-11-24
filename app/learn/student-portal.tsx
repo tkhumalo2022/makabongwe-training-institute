@@ -69,16 +69,23 @@ export default function StudentPortal({slug}:{slug?:string}){
     await fetch("/api/learn/auth",{method:"DELETE"});
     setMe(null);setSpace(null);setStage("identify");setError("");setInfo("");
   }
-  return <main className="mti-learner">
+  return <main className={"mti-learner"+(me?" mti-has-session":"")}>
     <header className="mti-student-header">
-      <Link className="mti-student-brand" href="/"><span><Image src="/images/makabongwe-logo.webp" alt="" width={42} height={42}/></span><span><strong>MAKABONGWE</strong><small>LEARNER PORTAL</small></span></Link>
+      <Link className="mti-student-brand" href="/"><span><Image src="/images/makabongwe-logo.webp" alt="" width={42} height={42}/></span><span><strong>MAKABONGWE</strong><small>Student intranet</small></span></Link>
       <div className="mti-student-header-actions"><span>Learning administration</span>{me?<button type="button" onClick={signOut}>Sign out</button>:<Link href="/">Main website</Link>}</div>
     </header>
     <div className="mti-student-wrap">
       <aside className="mti-student-intro">
         <p className="mti-student-kicker">MAKABONGWE TRAINING INSTITUTE</p>
-        <h1>{me ? <>Your learning <em>starts here.</em></> : <>A dedicated place for <em>your learning.</em></>}</h1>
+        <h1>{me ? <>Your courses</> : <>A dedicated place for <em>your learning.</em></>}</h1>
         <p>View your courses, learning material and official programme announcements in one secure workspace.</p>
+        {me&&<nav className="mti-student-nav" aria-label="My course navigation">
+          <Link href="/learn" aria-current={!slug?"page":undefined}>My overview</Link>
+          <span className="mti-student-nav-label">Enrolled courses</span>
+          {me.courseSpaces.map(course=><Link key={course.id} href={"/learn/course/"+course.slug}
+            aria-current={slug===course.slug?"page":undefined}>{course.title}</Link>)}
+          <div className="mti-student-account"><span>Student number</span><strong>{me.student.studentNumber}</strong></div>
+        </nav>}
         <div className="mti-student-rule"/>
         <div className="mti-student-inform"><strong>One student number.</strong><span>Keep the same student identity across every Makabongwe programme you enrol in.</span></div>
       </aside>

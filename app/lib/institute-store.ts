@@ -37,6 +37,7 @@ async function modify<T>(change:(store:Store)=>Promise<T>|T):Promise<T>{
   const next=chain.then(run,run);chain=next.catch(()=>{});return next;
 }
 export async function courses():Promise<Course[]>{
+  if(process.env.MAKABONGWE_INSTITUTE_MODE==="neon")return (await import("./institute-neon")).courses();
   const rows=await listManagedProgrammes();
   return rows.map(p=>({id:p.id,slug:p.slug,title:p.title,description:p.description}));
 }
@@ -53,6 +54,7 @@ function queue(s:Store,student:Student,courseId:number|null,kind:OutboxItem["kin
   return item;
 }
 export async function instituteOverview(){
+  if(process.env.MAKABONGWE_INSTITUTE_MODE==="neon")return (await import("./institute-neon")).instituteOverview();
   const courseList=await courses();const s=await read();
   return {courses:courseList,students:s.students, memberships:s.memberships, modules:s.modules,announcements:s.announcements, resources:s.resources,
     outbox:s.outbox.filter(e=>e.kind!=="login-code").slice(-50).reverse().map(({body,...item})=>({...item,preview:body.slice(0,180)})),
@@ -60,6 +62,7 @@ export async function instituteOverview(){
     mode:"local-preview" as const};
 }
 export async function registerStudent(input:unknown){
+  if(process.env.MAKABONGWE_INSTITUTE_MODE==="neon")return (await import("./institute-neon")).registerStudent(input);
   const data=(input&&typeof input==="object"?input:{}) as Record<string,unknown>;
   const fullName=required(data.fullName,"Full name",3,160);
   const email=validateEmail(data.email);
@@ -77,6 +80,7 @@ export async function registerStudent(input:unknown){
   });
 }
 export async function enrolStudent(input:unknown){
+  if(process.env.MAKABONGWE_INSTITUTE_MODE==="neon")return (await import("./institute-neon")).enrolStudent(input);
   const data=(input&&typeof input==="object"?input:{}) as Record<string,unknown>;
   const studentNumber=required(data.studentNumber,"Student number",12,32).toUpperCase();
   const course=await validCourse(data.courseId);
@@ -90,6 +94,7 @@ export async function enrolStudent(input:unknown){
   });
 }
 export async function saveModule(input:unknown){
+  if(process.env.MAKABONGWE_INSTITUTE_MODE==="neon")return (await import("./institute-neon")).saveModule(input);
   const data=(input&&typeof input==="object"?input:{}) as Record<string,unknown>;
   const course=await validCourse(data.courseId);
   const title=required(data.title,"Module title",2,160);
@@ -102,6 +107,7 @@ export async function saveModule(input:unknown){
   });
 }
 export async function publishAnnouncement(input:unknown){
+  if(process.env.MAKABONGWE_INSTITUTE_MODE==="neon")return (await import("./institute-neon")).publishAnnouncement(input);
   const data=(input&&typeof input==="object"?input:{}) as Record<string,unknown>;
   const course=await validCourse(data.courseId);
   const title=required(data.title,"Announcement title",2,160);
@@ -120,6 +126,7 @@ export async function publishAnnouncement(input:unknown){
   });
 }
 export async function addResource(input:unknown){
+  if(process.env.MAKABONGWE_INSTITUTE_MODE==="neon")return (await import("./institute-neon")).addResource(input);
   const data=(input&&typeof input==="object"?input:{}) as Record<string,unknown>;
   const course=await validCourse(data.courseId);
   const title=required(data.title,"Resource title",2,160);
@@ -131,6 +138,7 @@ export async function addResource(input:unknown){
   });
 }
 export async function studentInfo(number:string){
+  if(process.env.MAKABONGWE_INSTITUTE_MODE==="neon")return (await import("./institute-neon")).studentInfo(number);
   const s=await read();
   const student=s.students.find(x=>x.studentNumber===number&&x.status==="active");
   if(!student) return null;
@@ -139,6 +147,7 @@ export async function studentInfo(number:string){
   return {student,courseSpaces:enrolled.map(x=>list.find(c=>c.id===x.courseId)).filter((c):c is Course=>Boolean(c))};
 }
 export async function studentCourseSpace(number:string,slug:string){
+  if(process.env.MAKABONGWE_INSTITUTE_MODE==="neon")return (await import("./institute-neon")).studentCourseSpace(number,slug);
   const me=await studentInfo(number);if(!me)return null;
   const course=me.courseSpaces.find(x=>x.slug===slug);if(!course)return null;
   const s=await read();
@@ -147,6 +156,7 @@ export async function studentCourseSpace(number:string,slug:string){
    resources:s.resources.filter(x=>x.courseId===course.id&&x.published)};
 }
 export async function createLoginCode(number:unknown,email:unknown){
+  if(process.env.MAKABONGWE_INSTITUTE_MODE==="neon")return (await import("./institute-neon")).createLoginCode(number,email);
   const studentNumber=required(number,"Student number",12,32).toUpperCase();
   const address=validateEmail(email);
   return modify(s=>{
@@ -164,6 +174,7 @@ export async function createLoginCode(number:unknown,email:unknown){
   });
 }
 export async function verifyLoginCode(number:unknown,code:unknown){
+  if(process.env.MAKABONGWE_INSTITUTE_MODE==="neon")return (await import("./institute-neon")).verifyLoginCode(number,code);
   const studentNumber=required(number,"Student number",12,32).toUpperCase();
   if(typeof code!=="string"||!/^[0-9]{6}$/.test(code))return false;
   return modify(s=>{
@@ -177,10 +188,12 @@ export async function verifyLoginCode(number:unknown,code:unknown){
   });
 }
 export async function localLoginOutbox(){
+  if(process.env.MAKABONGWE_INSTITUTE_MODE==="neon")return (await import("./institute-neon")).localLoginOutbox();
   const s=await read();
   return s.outbox.filter(x=>x.kind==="login-code").slice(-25).reverse();
 }
 export async function markDelivery(id:string,state:"sent"|"failed",messageId?:string,error?:string){
+  if(process.env.MAKABONGWE_INSTITUTE_MODE==="neon")return (await import("./institute-neon")).markDelivery(id,state,messageId,error);
   return modify(s=>{const item=s.outbox.find(x=>x.id===id);if(!item)throw new Error("Email record missing.");
     item.state=state;if(messageId)item.providerMessageId=messageId;if(error)item.error=error.slice(0,160);if(state==="sent")item.sentAt=new Date().toISOString();return item;});
 }

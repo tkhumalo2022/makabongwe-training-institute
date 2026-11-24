@@ -9,7 +9,7 @@ type Programme = {
   is_published:boolean;is_available:boolean;
 };
 type AdminData={
-  programmes:Programme[];mode:"local-preview"|"supabase";enrolmentCount:number|null;
+  programmes:Programme[];mode:"local-preview"|"supabase"|"neon";enrolmentCount:number|null;
 };
 type Panel="overview"|"programmes"|"students"|"course-spaces"|"communications";
 type Props={data:AdminData|null; onNew:()=>void;onEdit:(row:Programme)=>void;onNavigate:(tab:Panel)=>void};
@@ -24,7 +24,7 @@ export default function AdminOverview({data,onNew,onEdit,onNavigate}:Props){
     <div className="mk-headline mk-greeting-headline"><AdminGreeting/></div>
     <div className="mk-institute-strip" aria-label="Programme register overview">
       <span><strong>{programmes.length}</strong> programmes</span>
-      <span><strong>{published}</strong> published</span>
+      <span><strong>{published}</strong> visible in local preview</span>
       <span><strong>{open}</strong> enrolment open</span>
       <span><strong>{unconfirmed}</strong> intake dates to confirm</span>
       <button type="button" onClick={()=>onNavigate("programmes")}>View all programmes</button>

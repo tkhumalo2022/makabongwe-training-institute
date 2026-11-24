@@ -16,7 +16,8 @@ export type ManagedProgramme = {
 const columns = "id,slug,title,description,department,duration,delivery_mode,location,available_intake,image_url,price_cents,registration_fee_cents,sort_order,is_published,is_available,updated_at";
 const localDir = join(process.cwd(), ".admin-local");
 const localFile = join(localDir, "programmes.json");
-export function getAdminStorageMode(): "local-preview" | "supabase" {
+export function getAdminStorageMode(): "local-preview" | "supabase" | "neon" {
+  if (process.env.MAKABONGWE_ADMIN_MODE === "neon" && process.env.MAKABONGWE_INSTITUTE_MODE === "neon") return "neon";
   return process.env.NODE_ENV === "production" || process.env.MAKABONGWE_ADMIN_MODE === "supabase"
     ? "supabase" : "local-preview";
 }
@@ -58,6 +59,7 @@ function ensureList(rows: ManagedProgramme[]) {
 }
 export async function listManagedProgrammes(): Promise<ManagedProgramme[]> {
   if (getAdminStorageMode() === "local-preview") return ensureList(await localRead());
+  if (getAdminStorageMode() === "neon") return (await import("./neon-programmes")).listNeonProgrammes();
   const response = await supabase(remoteConfig(), "cms_programmes?select=" + columns + "&order=sort_order.asc");
   if (!response.ok) throw new Error("Programme database request failed.");
   return ensureList(await response.json() as ManagedProgramme[]);
@@ -107,6 +109,7 @@ export function validateManagedProgramme(input: unknown) {
 }
 export async function saveManagedProgramme(input: unknown, id?: number): Promise<ManagedProgramme> {
   const values = validateManagedProgramme(input);
+  if (getAdminStorageMode() === "neon") return (await import("./neon-programmes")).saveNeonProgramme(values,id);
   if (getAdminStorageMode() === "local-preview") {
     const rows = await localRead();
     if (rows.some((row) => row.slug === values.slug && row.id !== id)) throw new Error("This programme slug already exists.");
@@ -139,6 +142,7 @@ async function tableCount(table: string) {
   return value && value !== "*" ? Number(value) : null;
 }
 export async function adminOverview() {
+  if (getAdminStorageMode() === "neon") return (await import("./neon-programmes")).neonProgrammeOverview();
   const programmes = await listManagedProgrammes();
   if (getAdminStorageMode() === "local-preview") return {
     mode: getAdminStorageMode(), programmes,

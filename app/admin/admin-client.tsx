@@ -14,7 +14,7 @@ type Programme = {
   sort_order: number; is_published: boolean; is_available: boolean;
 };
 type Data = {
-  mode: "supabase" | "local-preview";
+  mode: "supabase" | "local-preview" | "neon";
   programmes: Programme[]; enquiryCount: number | null;
   enrolmentCount: number | null; paymentCount: number | null;
 };
@@ -116,8 +116,6 @@ export default function AdminClient() {
   const filtered = useMemo(() => (data?.programmes || []).filter(p =>
     (p.title + " " + p.department + " " + p.location).toLowerCase().includes(filter.toLowerCase())
   ), [data, filter]);
-  const published = data?.programmes.filter(p => p.is_published).length || 0;
-  const intakeOpen = data?.programmes.filter(p => p.is_available).length || 0;
   function edit(row: Programme) {
     setDraft({...row, price_rands: row.price_cents / 100, registration_fee_rands: row.registration_fee_cents / 100});
     setActive("programmes");setMessage("");setError("");
@@ -174,8 +172,8 @@ export default function AdminClient() {
               <div className="mk-sidebar-bottom"><p>Training institute<br/>Richards Bay, KZN</p><Link href="/programmes">Public programmes ↗</Link><Link href="/learn">Student portal ↗</Link><button type="button" onClick={logout}>Sign out</button></div>
             </aside>
             <div className="mk-main">
-              <header className="mk-header"><div><p className="mk-eyebrow">OPERATIONS / {active.toUpperCase()}</p><p className="mk-date">Makabongwe Projects (Pty) Ltd</p></div><div className="mk-header-status"><span className="mk-dot"/><span>{data?.mode==="local-preview"?"Local draft mode":"Supabase connected"}</span><span className="mk-last-sync">{lastChecked ? "Updated " + lastChecked.toLocaleTimeString("en-ZA", {timeZone:"Africa/Johannesburg",hour:"2-digit",minute:"2-digit",hour12:false}) + " SAST" : "Awaiting refresh"}</span><button type="button" className="mk-header-refresh" onClick={() => void reload().catch(() => setError("Programme data could not be refreshed."))}>Refresh</button></div></header>
-              {data?.mode==="local-preview" && <div className="mk-preview-note" role="note"><strong>LOCAL PREVIEW.</strong> Changes are saved on this laptop and appear on the localhost programmes page. Nothing changes on the live website or payment system.</div>}
+              <header className="mk-header"><div><p className="mk-eyebrow">OPERATIONS / {active.toUpperCase()}</p><p className="mk-date">Makabongwe Projects (Pty) Ltd</p></div><div className="mk-header-status"><span className="mk-dot"/><span>{data?.mode==="local-preview"?"Local programme drafts":"Programme service connected"}</span><span className="mk-last-sync">{lastChecked ? "Updated " + lastChecked.toLocaleTimeString("en-ZA", {timeZone:"Africa/Johannesburg",hour:"2-digit",minute:"2-digit",hour12:false}) + " SAST" : "Awaiting refresh"}</span><button type="button" className="mk-header-refresh" onClick={() => void reload().catch(() => setError("Programme data could not be refreshed."))}>Refresh</button></div></header>
+              {data?.mode==="local-preview" && <div className="mk-preview-note" role="note"><strong>LOCAL PREVIEW.</strong> Programme edits stay on this laptop. Student registration uses the separate Neon PostgreSQL preview database. Nothing changes on the live website or payment system.</div>}
               {error && <div className="mk-alert" role="alert">{error}</div>}
               {message && <div className="mk-success" role="status">{message}</div>}
               {active==="overview" && <AdminOverview data={data} onNew={startNew} onEdit={edit} onNavigate={setActive} />}
@@ -212,10 +210,10 @@ export default function AdminClient() {
                   </div>
                 </div>
               </section>}
-              {active==="enrolments" && <section className="mk-section"><div className="mk-headline"><p className="mk-eyebrow">LEARNER ADMINISTRATION</p><h1>Enrolments <em>& registers.</em></h1><p>Safeguard private learner records and prepare for the next cohort.</p></div><div className="mk-metrics"><article><span>RECORDED ENROLMENTS</span><strong>{data?.enrolmentCount??"—"}</strong><p>{data?.mode==="supabase"?"Live database count":"Requires Supabase connection"}</p></article><article><span>OPEN PROGRAMMES</span><strong>{intakeOpen}</strong><p>Configured for enrolment</p></article></div><div className="mk-panel mk-inform"><span>PRIVACY FIRST</span><h2>Learner data stays protected.</h2><p>Existing enrolments and course registers are stored in Supabase. This preview exposes aggregate counts only; private identification, payment details and student records are not copied to local draft files.</p><button type="button" onClick={()=>setActive("programmes")}>Review programme readiness ↗</button></div></section>}
+              {active==="enrolments" && <InstitutePanel view="enrolments" />}
               {active==="enquiries" && <section className="mk-section"><div className="mk-headline"><p className="mk-eyebrow">ENQUIRY TRACKING</p><h1>Incoming <em>opportunities.</em></h1><p>Track programme interest before committing to delivery dates.</p></div><div className="mk-metrics"><article><span>ENQUIRIES RECEIVED</span><strong>{data?.enquiryCount??"—"}</strong><p>{data?.mode==="supabase"?"Live database count":"Requires Supabase connection"}</p></article><article><span>PAYMENT RECORDS</span><strong>{data?.paymentCount??"—"}</strong><p>{data?.mode==="supabase"?"Live database count":"Requires Supabase connection"}</p></article></div><div className="mk-panel mk-inform"><span>SERVER-SIDE RECORDS</span><h2>No sensitive details in the browser until roles are set up.</h2><p>The website&apos;s existing enquiry and payment endpoints remain unchanged. Review individual records using authorised Supabase access, not a public API.</p><Link href="/contact">View public enquiry form ↗</Link></div></section>}
               {(active==="students" || active==="course-spaces" || active==="communications") && <InstitutePanel view={active} />}
-              {active==="settings" && <section className="mk-section"><div className="mk-headline"><p className="mk-eyebrow">ADMINISTRATION SETTINGS</p><h1>System <em>readiness.</em></h1></div><div className="mk-panel mk-settings"><h2>Current connection</h2><dl><div><dt>Environment</dt><dd>{data?.mode==="local-preview"?"Local draft / preview":"Supabase server connection"}</dd></div><div><dt>Administrator authentication</dt><dd>Protected session · HttpOnly cookie</dd></div><div><dt>Publishing</dt><dd>{data?.mode==="local-preview"?"Localhost only":"Supabase CMS"}</dd></div><div><dt>Payment settings</dt><dd>Existing payment routes unchanged</dd></div></dl><p>Live publishing needs the Supabase server configuration and an explicitly enabled admin mode. The repository contains no production keys.</p><button className="mk-secondary" type="button" onClick={logout}>Sign out safely</button></div></section>}
+              {active==="settings" && <section className="mk-section"><div className="mk-headline"><p className="mk-eyebrow">ADMINISTRATION SETTINGS</p><h1>System <em>readiness.</em></h1></div><div className="mk-panel mk-settings"><h2>Current connection</h2><dl><div><dt>Environment</dt><dd>{data?.mode==="local-preview"?"Local draft / preview":data?.mode==="neon"?"Neon PostgreSQL / preview":"Supabase server connection"}</dd></div><div><dt>Administrator authentication</dt><dd>Protected session · HttpOnly cookie</dd></div><div><dt>Publishing</dt><dd>{data?.mode==="local-preview"?"Localhost only":data?.mode==="neon"?"Neon programmes":"Supabase CMS"}</dd></div><div><dt>Payment settings</dt><dd>Existing payment routes unchanged</dd></div></dl><p>Live publishing needs the Supabase server configuration and an explicitly enabled admin mode. The repository contains no production keys.</p><button className="mk-secondary" type="button" onClick={logout}>Sign out safely</button></div></section>}
               <footer className="mk-footer">MAKABONGWE PROJECTS <span>Internal operations dashboard · {new Date().getFullYear()}</span></footer>
             </div>
           </div>

@@ -37,6 +37,18 @@ create table if not exists public.mti_courses (
   updated_at timestamptz not null default now()
 );
 
+-- Editable programme metadata used by the administrative intranet.
+-- Keep this additive for existing Neon preview branches and future migrations.
+alter table public.mti_courses add column if not exists department text not null default 'Agricultural Training';
+alter table public.mti_courses add column if not exists duration text not null default 'To be confirmed';
+alter table public.mti_courses add column if not exists delivery_mode text not null default 'Contact learning';
+alter table public.mti_courses add column if not exists location text not null default 'To be confirmed';
+alter table public.mti_courses add column if not exists available_intake text;
+alter table public.mti_courses add column if not exists image_url text;
+alter table public.mti_courses add column if not exists price_cents integer not null default 0;
+alter table public.mti_courses add column if not exists registration_fee_cents integer not null default 0;
+alter table public.mti_courses add column if not exists sort_order integer not null default 0;
+alter table public.mti_courses add column if not exists is_available boolean not null default false;
 create table if not exists public.mti_course_enrolments (
   student_number text not null references public.mti_students(student_number) on update restrict on delete restrict,
   course_id bigint not null references public.mti_courses(id) on delete restrict,

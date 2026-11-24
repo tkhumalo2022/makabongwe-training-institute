@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import AdminClient from "./admin-client";
 import "./admin.css";
+import "./intranet.css";
 
 export const metadata: Metadata = {
   title: "Administration | Makabongwe",

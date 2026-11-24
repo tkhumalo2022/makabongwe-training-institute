@@ -11,7 +11,7 @@ type Announcement={id:string;courseId:number;title:string;body:string;published:
 type Resource={id:string;courseId:number;title:string;url:string;published:boolean};
 type EmailItem={id:string;recipient:string;kind:string;subject:string;state:string;preview:string;createdAt:string};
 type InstituteData={mode:string;emailDeliveryReady:boolean;students:Student[];memberships:Membership[];courses:Course[];modules:CourseModule[];announcements:Announcement[];resources:Resource[];outbox:EmailItem[];counts:{students:number;memberships:number;courses:number;messagesQueued:number};loginPreviews?:{studentNumber:string;subject:string;body:string;createdAt:string}[]};
-type View="students"|"course-spaces"|"communications";
+type View="students"|"enrolments"|"course-spaces"|"communications";
 async function receive(response:Response){
   let data:Record<string,unknown>={};
   try{data=await response.json() as Record<string,unknown>;}catch{}
@@ -25,6 +25,7 @@ export default function InstitutePanel({view}:{view:View}){
   const [notice,setNotice]=useState("");
   const [error,setError]=useState("");
   const [search,setSearch]=useState("");
+  const [enrolCourseId,setEnrolCourseId]=useState<number|null>(null);
   const [name,setName]=useState("");
   const [email,setEmail]=useState("");
   const [existingNumber,setExistingNumber]=useState("");
@@ -72,8 +73,8 @@ export default function InstitutePanel({view}:{view:View}){
   return <section className="mk-section mk-institute-section">
     <div className="mk-headline">
       <p className="mk-eyebrow">MAKABONGWE / ONLINE INSTITUTE</p>
-      <h1>{view==="students"?"Student register":view==="course-spaces"?"Dedicated course spaces":"Student communications"}<span className="mk-title-period">.</span></h1>
-      <p>{view==="students"?"Each student receives one permanent student number across all programmes.":view==="course-spaces"?"Manage learning materials and announcements for each course separately.":"Email invitations and announcements are recorded before delivery."}</p>
+      <h1>{view==="students"?"Student register":view==="enrolments"?"Course enrolments":view==="course-spaces"?"Dedicated course spaces":"Student communications"}<span className="mk-title-period">.</span></h1>
+      <p>{view==="students"?"Each student receives one permanent student number across all programmes.":view==="enrolments"?"Review registered learners in each programme without duplicating their student identity.":view==="course-spaces"?"Manage learning materials and announcements for each course separately.":"Email invitations and announcements are recorded before delivery."}</p>
     </div>
     <div className="mk-institute-strip">
       <span><strong>{data?.counts.students??"–"}</strong> students</span>
@@ -82,7 +83,12 @@ export default function InstitutePanel({view}:{view:View}){
       <span><strong>{data?.counts.messagesQueued??"–"}</strong> preview emails</span>
       <button type="button" onClick={()=>void fetchData(showCodes)} disabled={pending}>Refresh</button>
     </div>
-    <div className="mk-institute-note"><strong>LOCAL TEST DATA</strong> — Student records and email drafts remain on this laptop. No student email is sent unless a verified server-side mail provider is explicitly enabled.</div>
+    <div className="mk-institute-note" role="note">
+      <strong>{data?.mode==="neon-preview"?"NEON POSTGRESQL PREVIEW":"LOCAL TEST DATA"}</strong>
+      {" "} {data?.mode==="neon-preview"?
+        "Student records are stored in the isolated Makabongwe preview database. No live student email is sent without a configured mail provider.":
+        "Student records and email drafts remain on this laptop. No student email is sent without a verified mail provider."}
+    </div>
     {error&&<p className="mk-alert" role="alert">{error}</p>}
     {notice&&<p className="mk-success" role="status">{notice}</p>}
     {!data ? <div className="mk-panel">Loading institute data…</div> : view==="students" ? <div className="mk-student-columns">
@@ -114,6 +120,39 @@ export default function InstitutePanel({view}:{view:View}){
           <label>Student number<input className="mk-institute-input" value={existingNumber} onChange={e=>setExistingNumber(e.target.value)} required placeholder="MTI-2026-000001"/></label>
           <button className="mk-secondary" type="submit" disabled={pending||!assignCourse}>Add to selected programme</button>
         </form>
+      </div>
+    </div> : view==="enrolments" ? <div className="mk-panel mk-enrolment-register">
+      <div className="mk-panel-heading">
+        <div><span>ENROLMENT LEDGER</span><h2>Student course assignments</h2></div>
+        <span className="mk-count-subtle">{data.memberships.filter(m=>enrolCourseId===null||m.courseId===enrolCourseId).length} enrolments</span>
+      </div>
+      <p className="mk-institute-helper">Each record links one permanent student number to one programme. No fees or attendance are inferred.</p>
+      <label className="mk-search-label" htmlFor="enrol-course-filter">Filter by programme</label>
+      <select id="enrol-course-filter" className="mk-institute-input" value={enrolCourseId??""}
+        onChange={e=>setEnrolCourseId(e.target.value?Number(e.target.value):null)}>
+        <option value="">All programmes</option>
+        {data.courses.map(c=><option value={c.id} key={c.id}>{c.title}</option>)}
+      </select>
+      <div className="mk-table-scroll">
+        <table className="mk-record-table">
+          <thead><tr><th>Student no.</th><th>Student</th><th>Programme</th><th>Enrolled</th><th>Status</th></tr></thead>
+          <tbody>
+            {data.memberships.filter(m=>enrolCourseId===null||m.courseId===enrolCourseId)
+              .map(m=>{
+                const learner=data.students.find(st=>st.studentNumber===m.studentNumber);
+                const programme=data.courses.find(c=>c.id===m.courseId);
+                return <tr key={m.studentNumber+"-"+m.courseId}>
+                  <td><strong>{m.studentNumber}</strong></td>
+                  <td>{learner?.fullName||"Account unavailable"}</td>
+                  <td>{programme?.title||"Programme unavailable"}</td>
+                  <td>{new Intl.DateTimeFormat("en-ZA",{dateStyle:"medium",timeZone:"Africa/Johannesburg"}).format(new Date(m.enrolledAt))}</td>
+                  <td><span className="mk-record-status">{m.status}</span></td>
+                </tr>;
+              })}
+            {!data.memberships.some(m=>enrolCourseId===null||m.courseId===enrolCourseId)&&
+              <tr><td colSpan={5}>No enrolments for the selected programme.</td></tr>}
+          </tbody>
+        </table>
       </div>
     </div> : view==="course-spaces" ? <div className="mk-course-admin-grid">
       <aside className="mk-panel mk-course-selector"><div className="mk-panel-heading"><div><span>COURSE DIRECTORY</span><h2>Programmes</h2></div></div>

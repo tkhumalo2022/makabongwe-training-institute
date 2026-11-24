@@ -1,0 +1,149 @@
+/* Makabongwe Intranet UI · staff / 2026-11-24
+   Institutional, information-first. No copied Rosebank College branding. */
+.mk-admin{
+  --ink:#1D3029;--muted:#53675B;--line:#CFDAD0;--paper:#F1F5F1;
+  --green:#215943;--moss:#ABC39E;--white:#FFFFFF;
+  background:#F1F5F1;color:#1D3029;
+  font:400 14px/1.5 "Segoe UI",Tahoma,Arial,sans-serif;
+}
+.mk-admin h1,.mk-admin h2,.mk-admin h3,.mk-brand strong,
+.mk-metrics strong,.mk-panel-dark h2{
+  font-family:"Segoe UI",Tahoma,Arial,sans-serif;
+  font-weight:650;letter-spacing:-.045em;
+}
+.mk-admin h1 em,.mk-admin h2 em{color:#255F49;font-style:normal;font-weight:650}
+.mk-admin .mk-eyebrow,.mk-admin .mk-nav-label,.mk-panel-heading span{
+  letter-spacing:.065em;text-transform:none;font-size:12px;font-weight:650;
+}
+.mk-sidebar{
+  width:264px;min-height:100vh;height:100vh;
+  background:#182F29;color:#EAF4ED;border-right:1px solid #315345;
+  padding:24px 15px 22px;
+}
+.mk-brand{margin:0 0 42px;padding:5px 10px 23px;border-bottom:1px solid #476556}
+.mk-brand strong{color:#FFFFFF;font-size:21px}
+.mk-brand small{color:#BDD2C2;font-size:11px;letter-spacing:.035em;margin-top:2px}
+.mk-brand .mk-mark{border-color:#72957D;background:#F5F7F2}
+.mk-nav-label{color:#B0C6B8;margin:0 12px 13px}
+.mk-nav{gap:4px}
+.mk-nav button{
+  border:0;border-left:3px solid transparent;border-radius:4px;
+  padding:13px 12px 13px 15px;min-height:47px;
+  color:#D4E7DA;font-size:14px;font-weight:540;
+  transition:background-color .15s ease,color .15s ease;
+}
+.mk-nav button:hover{background:#2B4A3D;color:#FFF}
+.mk-nav button.is-active{
+  background:#EFF5EE;border-left-color:#98B88C;
+  color:#19382C;font-weight:720;
+}
+.mk-nav-number{display:none!important}
+.mk-nav button.is-active .mk-arrow{color:#1E6049}
+.mk-sidebar-bottom{border-top-color:#466255;color:#C5D8CA}
+.mk-sidebar-bottom a{color:#FFFFFF;text-decoration:underline;text-underline-offset:3px}
+.mk-sidebar-bottom button{color:#D3E5D5;min-height:35px}
+.mk-main{width:calc(100% - 264px);background:#F2F6F2}
+.mk-header{
+  position:sticky;top:0;z-index:10;
+  height:83px;background:#FFF;border-bottom:1px solid #D2DDD5;
+  padding:15px clamp(20px,3.5vw,48px);
+}
+.mk-header .mk-eyebrow{color:#255A42;font-size:13px;letter-spacing:.03em}
+.mk-date{color:#63796A;font-size:12px}
+.mk-header-status{color:#355C46;gap:9px;font-weight:550;flex-wrap:wrap;justify-content:flex-end}
+.mk-last-sync{color:#647B69}
+.mk-header-refresh{border:1px solid #CFDDD1;background:#FFF;color:#285843;border-radius:4px;padding:8px 10px}
+.mk-dot{background:#B78F52}
+.mk-section{
+  padding:31px clamp(20px,3.5vw,48px) 60px;
+  min-height:calc(100vh - 83px);
+}
+.mk-headline{margin-bottom:28px}
+.mk-headline .mk-eyebrow{margin-bottom:10px}
+.mk-headline h1{font-size:clamp(30px,3.1vw,43px);line-height:1.2;margin-bottom:9px}
+.mk-headline>p:last-child,.mk-headline>div>p:last-child{font-size:14px;color:#597166}
+.mk-panel,.mk-metrics article{
+  background:#FFFFFF;border:1px solid #D2DED4;border-radius:5px;
+  box-shadow:0 2px 7px rgba(24,47,41,.025);
+}
+.mk-panel{padding:clamp(18px,2vw,27px)}
+.mk-metrics{gap:12px}
+.mk-metrics article{min-height:128px;padding:19px}
+.mk-metrics strong{font-size:36px;color:#254937}
+.mk-primary{
+  background:#245C45;border:1px solid #245C45;color:#FFFFFF;
+  padding:11px 19px;border-radius:4px;min-height:44px;
+  font-weight:650;gap:18px;
+}
+.mk-primary:hover:not(:disabled){background:#173F2F}
+.mk-secondary{border:1px solid #B9CDC0;border-radius:4px;min-height:44px;color:#235840}
+.mk-secondary:hover{background:#EFF5EF}
+.mk-institute-strip{
+  background:#E5EFE5;border:1px solid #D0DED0;border-radius:5px;
+  gap:13px;padding:15px 20px;
+}
+.mk-institute-strip strong{color:#204D39}
+.mk-institute-note,.mk-preview-note{
+  background:#FFF9E9!important;border:1px solid #E6DDBF!important;
+  color:#6A572F!important;border-radius:4px;
+  font-size:12px!important;line-height:1.6!important;
+}
+.mk-new-student .mk-institute-helper{max-width:55ch;font-size:13px;color:#566D5D}
+.mk-institute-form label{font-size:13px;letter-spacing:0;text-transform:none}
+.mk-institute-input,.mk-admin input,.mk-admin textarea,.mk-admin select{
+  background:#FFFFFF;border:1px solid #BDCEC1;color:#1F3428;border-radius:4px;
+  font-size:14px;min-height:43px;
+}
+.mk-institute-input:focus,.mk-admin input:focus,.mk-admin textarea:focus,.mk-admin select:focus{
+  border-color:#367451;
+}
+.mk-record-table{font-family:"Segoe UI",Tahoma,Arial,sans-serif}
+.mk-record-table th{
+  text-transform:none;font-weight:700;letter-spacing:0;font-size:12px;
+  color:#4B6554;background:#F3F7F3;
+}
+.mk-record-table td{font-size:13px;color:#263A2B}
+.mk-record-status{color:#256B44}
+.mk-course-pick{border-left:3px solid transparent;border-radius:2px}
+.mk-course-pick.is-current{border-left-color:#2C7654;background:#EBF4EA}
+.mk-course-summary{border-top:3px solid #32644D}
+.mk-mail-state{font-size:13px}
+.mk-auth-wrap{max-width:1200px;gap:clamp(26px,5vw,80px)}
+.mk-auth-intro h1{font-size:clamp(40px,4.4vw,65px)}
+.mk-auth-card{border-radius:6px;box-shadow:0 15px 45px rgba(24,47,41,.07)}
+.mk-auth-card h2{font-size:33px}
+.mk-auth-card input{font-size:16px}
+.mk-admin a:focus-visible,.mk-admin button:focus-visible,
+.mk-admin :is(input,textarea,select):focus-visible{
+  outline:3px solid #B58A51!important;outline-offset:3px!important;
+}
+@media(max-width:980px){
+  .mk-sidebar{width:222px;padding-inline:10px}
+  .mk-main{width:calc(100% - 222px)}
+}
+@media(max-width:760px){
+  .mk-shell{flex-direction:column}
+  .mk-sidebar{
+    width:100%;height:auto;min-height:0;position:static;
+    padding:13px 14px 12px;gap:10px;
+  }
+  .mk-brand{margin:0;padding:0 4px 10px}
+  .mk-nav-label{margin:0 4px}
+  .mk-nav{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding-bottom:4px;scrollbar-width:thin}
+  .mk-nav button{
+    white-space:nowrap;width:auto;flex:0 0 auto;
+    min-height:44px;padding:10px 13px;
+    border-left:0;border-bottom:3px solid transparent;
+  }
+  .mk-nav button.is-active{border-left:0;border-bottom-color:#9FC795}
+  .mk-sidebar-bottom{display:none}
+  .mk-main{width:100%}
+  .mk-header{position:static;height:auto;min-height:72px;padding:14px 18px}
+  .mk-header-status{font-size:11px}
+  .mk-section{padding:22px 15px 42px}
+  .mk-headline h1{font-size:30px}
+  .mk-auth-wrap{grid-template-columns:1fr;padding:25px 16px}
+}
+@media(prefers-reduced-motion:reduce){
+ .mk-admin *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
